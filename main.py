@@ -22,13 +22,13 @@ class IssacHead:
         self.image = load_image('isaac_head.png')
         self.dir_x = 0
         self.dir_y = 0
-        self.left = 80
+        self.left = 0
     def update(self):
         self.frame = (self.frame+1) % 2
         self.x += self.dir_x
         self.y += self.dir_y
     def draw(self):
-        self.image.clip_draw(self.frame*80, 0, 80, 80, self.x, self.y)
+        self.image.clip_draw(self.frame*80+self.left, 0, 80, 80, self.x, self.y)
     pass
 
 
@@ -41,7 +41,7 @@ class IssacBody:
         self.dir_x = 0
         self.dir_y = 0
         self.is_move = False
-        self.bottom = 100
+        self.bottom = 90
     def update(self):
         if(self.is_move):
             self.frame = (self.frame+1) % 8
@@ -68,18 +68,22 @@ def handle_events():
                 character_body.bottom = 0
                 is_key_pressed += 1
             elif event.key == SDLK_a:
+                character_body.is_move = True
                 character_head.dir_x -= 20
                 character_body.dir_x -= 20
+                character_body.bottom = 180
                 is_key_pressed += 1
             elif event.key == SDLK_w:
+                character_body.is_move = True
                 character_head.dir_y += 20
                 character_body.dir_y += 20
+                character_body.bottom = 90
                 is_key_pressed += 1
             elif event.key == SDLK_s:
                 character_body.is_move = True
                 character_head.dir_y -= 20
                 character_body.dir_y -= 20
-                character_body.bottom = 100
+                character_body.bottom = 90
                 is_key_pressed += 1
             elif event.key == SDLK_ESCAPE:
                 running = False
@@ -93,10 +97,16 @@ def handle_events():
                 character_body.dir_x -= 20
             elif event.key == SDLK_a:
                 is_key_pressed -= 1
+                if is_key_pressed == 0:
+                    character_body.is_move = False
+                    character_body.frame = 0
                 character_head.dir_x += 20
                 character_body.dir_x += 20
             elif event.key == SDLK_w:
                 is_key_pressed -= 1
+                if is_key_pressed == 0:
+                    character_body.is_move = False
+                    character_body.frame = 0
                 character_head.dir_y -= 20
                 character_body.dir_y -= 20
             elif event.key == SDLK_s:
