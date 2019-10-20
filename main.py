@@ -25,8 +25,18 @@ class IssacHead:
         self.left = 0
     def update(self):
         self.frame = (self.frame+1) % 2
-        self.x += self.dir_x
-        self.y += self.dir_y
+        if self.x > BackGround_Width-180:
+            self.x = BackGround_Width-180
+        elif self.x < 180:
+            self.x = 180
+        else:
+            self.x += self.dir_x
+        if self.y > BackGround_Height-150:
+            self.y = BackGround_Height-150
+        elif self.y < 220:
+            self.y = 220
+        else:
+            self.y += self.dir_y
     def draw(self):
         self.image.clip_draw(self.frame*80+self.left, 0, 80, 80, self.x, self.y)
     pass
@@ -43,10 +53,21 @@ class IssacBody:
         self.is_move = False
         self.bottom = 90
     def update(self):
-        if(self.is_move):
+        if self.is_move:
             self.frame = (self.frame+1) % 8
-        self.x += self.dir_x
-        self.y += self.dir_y
+        if self.x > BackGround_Width-185:
+            self.x = BackGround_Width-185
+        elif self.x < 175:
+            self.x = 175
+        else:
+            self.x += self.dir_x
+        if self.y > BackGround_Height-200:
+            self.y = BackGround_Height-200
+        elif self.y < 170:
+            self.y = 170
+        else:
+            self.y += self.dir_y
+
     def draw(self):
         self.image.clip_draw(105*self.frame, self.bottom, 60, 60, self.x, self.y)
 
