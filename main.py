@@ -85,8 +85,14 @@ def handle_events():
                 character_body.dir_y -= 20
                 character_body.bottom = 90
                 is_key_pressed += 1
-            elif event.key == SDLK_ESCAPE:
-                running = False
+            elif event.key == SDLK_RIGHT:
+                character_head.left = 160
+            elif event.key == SDLK_LEFT:
+                character_head.left = 480
+            elif event.key == SDLK_UP:
+                character_head.left = 320
+            elif event.key == SDLK_DOWN:
+                character_head.left = 0
         elif event.type == SDL_KEYUP:
             if event.key == SDLK_d:
                 is_key_pressed -= 1
