@@ -7,13 +7,16 @@ image = None
 
 
 def enter():
-    global image
-    image = load_image('title.png')
+    global image, BackGround_Width, BackGround_Height
+    image = load_image('title1.png')
+    BackGround_Width = 1280
+    BackGround_Height = 960
+
     pass
 
 
 def exit():
-    global image
+    global image, BackGround_Width, BackGround_Height
     del(image)
     pass
 
@@ -33,7 +36,7 @@ def handle_events():
 
 def draw():
     clear_canvas()
-    image.draw(400, 300)
+    image.draw(BackGround_Width//2, BackGround_Height//2)
     update_canvas()
     pass
 

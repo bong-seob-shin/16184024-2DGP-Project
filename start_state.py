@@ -4,6 +4,8 @@ import title_state
 name = "StartState"
 image = None
 logo_time = 0.0
+BackGround_Width = 1280
+BackGround_Height = 960
 
 
 def enter():
@@ -15,6 +17,8 @@ def enter():
 def exit():
     global image
     del(image)
+    global BackGround_Width, BackGround_Height
+
     pass
 
 
@@ -31,7 +35,7 @@ def update():
 def draw():
     global image
     clear_canvas()
-    image.draw(400, 300)
+    image.draw(BackGround_Width//2, BackGround_Height//2)
     update_canvas()
     pass
 
