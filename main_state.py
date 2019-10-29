@@ -44,7 +44,7 @@ class Bullet:
         if self.b_dir == 0: #오른쪽
             if self.x > self.start_x+300:
                 self.y -= 10
-                
+
                 if self.velocity> 10:
                     self.velocity -= 8
             self.x += self.velocity
