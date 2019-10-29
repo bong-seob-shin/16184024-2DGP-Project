@@ -3,9 +3,8 @@ import json
 import os
 
 from pico2d import *
-
+import game_world
 import game_framework
-import title_state
 import pause_state
 
 BackGround_Width = 1280
@@ -17,6 +16,27 @@ character_head = None
 character_body = None
 background = None
 font = None
+bullet = None
+
+
+class Bullet:
+
+    image = None
+
+    def __init__(self, x = 400, y= 300, velocity = 1 ):
+        if Bullet.image == None:
+            Bullet.image = load_image('bullet.png')
+        self.x, self.y, self.velocity = x, y, velocity
+
+    def draw(self):
+        self.image.draw(self.x, self.y)
+
+    def update(self):
+        self.x += self.velocity
+
+        if self.x < 25 or self.x > 1280 - 25:
+            game_world.remove_object(self)
+    pass
 
 
 class BackGround:
@@ -85,6 +105,8 @@ class IssacBody:
         self.image.clip_draw(105*self.frame, self.bottom, 60, 60, self.x, self.y)
 
 
+
+
 def enter():
     global character_head, character_body, background, is_key_pressed
     global BackGround_Width, BackGround_Height
@@ -93,15 +115,15 @@ def enter():
     character_head = IssacHead()
     character_body = IssacBody()
     background = BackGround()
+    game_world.add_object(background, 0)
+    game_world.add_object(character_body, 1)
+    game_world.add_object(character_head, 1)
     is_key_pressed = 0
     pass
 
 
 def exit():
-    global character_head, character_body, background
-    del(character_head)
-    del(character_body)
-    del(background)
+    game_world.clear()
     pass
 
 
@@ -187,20 +209,22 @@ def handle_events():
                     character_body.frame = 0
                 character_head.dir_y += 20
                 character_body.dir_y += 20
+            elif event.key == SDLK_SPACE:
+                bullet = Bullet(character_head.x, character_head.y, character_head.dir * 3)
+                game_world.add_object(bullet, 1)
     pass
 
 
 def update():
-    character_head.update()
-    character_body.update()
+    for game_object in game_world.all_objects():
+        game_object.update()
     pass
 
 
 def draw():
     clear_canvas()
-    background.draw()
-    character_body.draw()
-    character_head.draw()
+    for game_object in game_world.all_objects():
+        game_object.draw()
     delay(0.15)
     update_canvas()
     pass
