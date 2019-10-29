@@ -23,18 +23,50 @@ class Bullet:
 
     image = None
 
-    def __init__(self, x = 400, y= 300, velocity = 1 ):
+    def __init__(self, x = 400, y= 300, b_dir =0):
         if Bullet.image == None:
             Bullet.image = load_image('bullet.png')
-        self.x, self.y, self.velocity = x, y, velocity
-
+        self.x, self.y, self.b_dir = x, y, b_dir
+        self.velocity = 40
+        self.start_x = self.x
+        self.start_y = self.y
     def draw(self):
-        self.image.draw(self.x, self.y)
+        if self.b_dir == 0: #오른쪽
+            self.image.draw(self.x+40, self.y)
+        elif self.b_dir == 1: #왼쪽
+            self.image.draw(self.x-40, self.y)
+        elif self.b_dir == 2: #아래
+            self.image.draw(self.x, self.y+40)
+        elif self.b_dir == 3: #위
+            self.image.draw(self.x, self.y-40)
 
     def update(self):
-        self.x += self.velocity
+        if self.b_dir == 0: #오른쪽
+            if self.x > self.start_x+300:
+                self.y -= 10
+                
+                if self.velocity> 10:
+                    self.velocity -= 8
+            self.x += self.velocity
+        elif self.b_dir == 1: #왼쪽
+            if self.x < self.start_x-300:
+                self.y -= 10
+                if self.velocity > 10:
+                    self.velocity -= 8
+            self.x -= self.velocity
+        elif self.b_dir == 2: #아래
+            self.y += self.velocity
+        elif self.b_dir == 3: #위
+            self.y -= self.velocity
 
-        if self.x < 25 or self.x > 1280 - 25:
+        if self.x < 175 or self.x > 1280 - 175:
+            game_world.remove_object(self)
+        elif self.x > self.start_x+400 or self.x < self.start_x-400:
+            game_world.remove_object(self)
+
+        if self.y < 155 or self.y > 960 - 150:
+            game_world.remove_object(self)
+        elif self.y <self.start_y - 400 or self.y > self.start_y+400:
             game_world.remove_object(self)
     pass
 
@@ -42,6 +74,9 @@ class Bullet:
 class BackGround:
     def __init__(self):
         self.image = load_image('BackGround.png')
+
+    def update(self):
+        pass
 
     def draw(self):
         self.image.draw(BackGround_Width//2, BackGround_Height//2)
@@ -108,7 +143,7 @@ class IssacBody:
 
 
 def enter():
-    global character_head, character_body, background, is_key_pressed
+    global character_head, character_body, background, is_key_pressed , is_key_pressing, bullet_dir
     global BackGround_Width, BackGround_Height
     BackGround_Width = 1280
     BackGround_Height = 960
@@ -119,6 +154,8 @@ def enter():
     game_world.add_object(character_body, 1)
     game_world.add_object(character_head, 1)
     is_key_pressed = 0
+    is_key_pressing = 0
+    bullet_dir = 0
     pass
 
 
@@ -137,6 +174,8 @@ def resume():
 
 def handle_events():
     global is_key_pressed
+    global is_key_pressing
+    global bullet_dir
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -174,12 +213,20 @@ def handle_events():
                 is_key_pressed += 1
             elif event.key == SDLK_RIGHT:
                 character_head.left = 160
+                is_key_pressing += 1
+                bullet_dir = 0
             elif event.key == SDLK_LEFT:
                 character_head.left = 480
+                is_key_pressing += 1
+                bullet_dir = 1
             elif event.key == SDLK_UP:
                 character_head.left = 320
+                is_key_pressing += 1
+                bullet_dir = 2
             elif event.key == SDLK_DOWN:
                 character_head.left = 0
+                is_key_pressing += 1
+                bullet_dir = 3
         elif event.type == SDL_KEYUP:
             if event.key == SDLK_d:
                 is_key_pressed -= 1
@@ -209,15 +256,25 @@ def handle_events():
                     character_body.frame = 0
                 character_head.dir_y += 20
                 character_body.dir_y += 20
-            elif event.key == SDLK_SPACE:
-                bullet = Bullet(character_head.x, character_head.y, character_head.dir * 3)
-                game_world.add_object(bullet, 1)
+            elif event.key == SDLK_RIGHT:
+                is_key_pressing -= 1
+            elif event.key == SDLK_LEFT:
+                is_key_pressing -= 1
+            elif event.key == SDLK_UP:
+                is_key_pressing -= 1
+            elif event.key == SDLK_DOWN:
+                is_key_pressing -= 1
+
     pass
 
 
 def update():
+    global is_key_pressing, bullet_dir
     for game_object in game_world.all_objects():
         game_object.update()
+    if is_key_pressing >= 1:
+        bullet = Bullet(character_head.x, character_head.y, bullet_dir)
+        game_world.add_object(bullet, 1)
     pass
 
 
