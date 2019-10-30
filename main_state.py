@@ -6,6 +6,7 @@ from pico2d import *
 import game_world
 import game_framework
 import pause_state
+import random
 
 BackGround_Width = 1280
 BackGround_Height = 960
@@ -18,6 +19,52 @@ background = None
 font = None
 bullet = None
 
+
+class Gusher:
+    image = None
+
+    def __init__(self):
+        if Gusher.image == None:
+            Gusher.image = load_image('Gusher.png')
+        self.x = BackGround_Width//2 + 100
+        self.y = BackGround_Height//2
+        self.velocity = 20
+        self.dir = 1
+        self.timer = 5
+
+    def update(self):
+        self.timer -= 1
+        if self.timer == 0:
+            self.dir = random.randint(1, 4)
+            self.timer = 5
+        if self.dir == 1 :
+           self.x = self.x + self.velocity
+        elif self.dir == 2:
+            self.x = self.x - self.velocity
+        elif self.dir == 3:
+            self.y = self.y + self.velocity
+        elif self.dir == 4:
+            self.y = self.y - self.velocity
+
+        if self.x > BackGround_Width-180:
+            self.x = BackGround_Width-180
+        elif self.x < 180:
+            self.x = 180
+        if self.y > BackGround_Height-150:
+            self.y = BackGround_Height-150
+        elif self.y < 220:
+            self.y = 220
+
+    def draw(self):
+        self.image.draw(self.x, self.y, 100, 100)
+
+    pass
+
+def is_crashed(Bullet, Gusher):
+    if Bullet.x == Gusher.x:
+        if Bullet.y == Gusher.y:
+            game_world.remove_object(Gusher)
+            game_world.remove_object(Bullet)
 
 class Bullet:
 
@@ -143,16 +190,18 @@ class IssacBody:
 
 
 def enter():
-    global character_head, character_body, background, is_key_pressed , is_key_pressing, bullet_dir
+    global character_head, character_body, background, is_key_pressed , is_key_pressing, bullet_dir, gusher
     global BackGround_Width, BackGround_Height
     BackGround_Width = 1280
     BackGround_Height = 960
     character_head = IssacHead()
     character_body = IssacBody()
+    gusher = Gusher()
     background = BackGround()
     game_world.add_object(background, 0)
     game_world.add_object(character_body, 1)
     game_world.add_object(character_head, 1)
+    game_world.add_object(gusher, 1)
     is_key_pressed = 0
     is_key_pressing = 0
     bullet_dir = 0
@@ -269,12 +318,16 @@ def handle_events():
 
 
 def update():
-    global is_key_pressing, bullet_dir
+    global is_key_pressing, bullet_dir, gusher, bullet, is_bullet_shot
+    is_bullet_shot = False
     for game_object in game_world.all_objects():
         game_object.update()
     if is_key_pressing >= 1:
         bullet = Bullet(character_head.x, character_head.y, bullet_dir)
         game_world.add_object(bullet, 1)
+        is_bullet_shot = True
+    if is_bullet_shot == True:
+        is_crashed(bullet, gusher)
     pass
 
 
