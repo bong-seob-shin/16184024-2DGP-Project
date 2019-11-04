@@ -207,7 +207,6 @@ def enter():
     bullet_dir = 0
     pass
 
-
 def exit():
     game_world.clear()
     pass
@@ -225,6 +224,7 @@ def handle_events():
     global is_key_pressed
     global is_key_pressing
     global bullet_dir
+
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
