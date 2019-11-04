@@ -25,7 +25,7 @@ class Gusher:
 
     def __init__(self):
         if Gusher.image == None:
-            Gusher.image = load_image('Gusher.png')
+            Gusher.image = load_image('resorce/Gusher.png')
         self.x = BackGround_Width//2 + 100
         self.y = BackGround_Height//2
         self.velocity = 20
@@ -72,7 +72,7 @@ class Bullet:
 
     def __init__(self, x = 400, y= 300, b_dir =0):
         if Bullet.image == None:
-            Bullet.image = load_image('bullet.png')
+            Bullet.image = load_image('resorce/bullet.png')
         self.x, self.y, self.b_dir = x, y, b_dir
         self.velocity = 40
         self.start_x = self.x
@@ -120,7 +120,7 @@ class Bullet:
 
 class BackGround:
     def __init__(self):
-        self.image = load_image('BackGround.png')
+        self.image = load_image('resorce/BackGround.png')
 
     def update(self):
         pass
@@ -134,9 +134,9 @@ class IssacHead:
     def __init__(self):
         self.x, self.y = BackGround_Width//2, BackGround_Height//2
         self.frame = 0
-        self.image = load_image('isaac_head.png')
-        self.dir_x = 0
-        self.dir_y = 0
+        self.image = load_image('resorce/isaac_head.png')
+        self.velocity_x = 0
+        self.velocity_y = 0
         self.left = 0
     def update(self):
         self.frame = (self.frame+1) % 2
@@ -145,13 +145,13 @@ class IssacHead:
         elif self.x < 180:
             self.x = 180
         else:
-            self.x += self.dir_x
+            self.x += self.velocity_x
         if self.y > BackGround_Height-150:
             self.y = BackGround_Height-150
         elif self.y < 220:
             self.y = 220
         else:
-            self.y += self.dir_y
+            self.y += self.velocity_y
     def draw(self):
         self.image.clip_draw(self.frame*80+self.left, 0, 80, 80, self.x, self.y)
     pass
@@ -162,9 +162,9 @@ class IssacBody:
     def __init__(self):
         self.x, self.y = BackGround_Width//2-5, (BackGround_Height//2)-50
         self.frame = 0
-        self.image = load_image('isaac_body.png')
-        self.dir_x = 0
-        self.dir_y = 0
+        self.image = load_image('resorce/isaac_body.png')
+        self.velocity_x = 0
+        self.velocity_y = 0
         self.is_move = False
         self.bottom = 90
     def update(self):
@@ -175,13 +175,13 @@ class IssacBody:
         elif self.x < 175:
             self.x = 175
         else:
-            self.x += self.dir_x
+            self.x += self.velocity_x
         if self.y > BackGround_Height-200:
             self.y = BackGround_Height-200
         elif self.y < 170:
             self.y = 170
         else:
-            self.y += self.dir_y
+            self.y += self.velocity_y
 
     def draw(self):
         self.image.clip_draw(105*self.frame, self.bottom, 60, 60, self.x, self.y)
