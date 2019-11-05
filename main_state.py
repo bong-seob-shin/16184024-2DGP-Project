@@ -83,15 +83,15 @@ class IssacBody:
 
 
 def enter():
-    global character, background, is_key_pressed , is_key_pressing, bullet_dir, gusher
+    global isaac, background, is_key_pressed , is_key_pressing, bullet_dir, gusher
     global BackGround_Width, BackGround_Height
     BackGround_Width = 1280
     BackGround_Height = 960
-    character = Isaac()
+    isaac = Isaac()
     gusher = Gusher()
     background = BackGround()
     game_world.add_object(background, 0)
-    game_world.add_object(character, 1)
+    game_world.add_object(isaac, 1)
     game_world.add_object(gusher, 1)
     is_key_pressed = 0
     is_key_pressing = 0
@@ -115,7 +115,7 @@ def handle_events():
     global is_key_pressed
     global is_key_pressing
     global bullet_dir
-    global character
+    global isaac
 
     events = get_events()
     for event in events:
@@ -129,66 +129,66 @@ def handle_events():
             if event.key == SDLK_ESCAPE:
                 running = False
             elif event.key == SDLK_d:
-                character.body_is_move = True
-                character.velocity_x += 20
-                character.body_bottom = 0
+                isaac.body_is_move = True
+                isaac.velocity_x += 20
+                isaac.body_bottom = 0
                 is_key_pressed += 1
             elif event.key == SDLK_a:
-                character.body_is_move = True
-                character.velocity_x -= 20
-                character.body_bottom = 180
+                isaac.body_is_move = True
+                isaac.velocity_x -= 20
+                isaac.body_bottom = 180
                 is_key_pressed += 1
             elif event.key == SDLK_w:
-                character.body_is_move = True
-                character.velocity_y += 20
-                character.body_bottom = 90
+                isaac.body_is_move = True
+                isaac.velocity_y += 20
+                isaac.body_bottom = 90
                 is_key_pressed += 1
             elif event.key == SDLK_s:
-                character.body_is_move = True
-                character.velocity_y -= 20
-                character.body_bottom = 90
+                isaac.body_is_move = True
+                isaac.velocity_y -= 20
+                isaac.body_bottom = 90
                 is_key_pressed += 1
             elif event.key == SDLK_RIGHT:
-                character.left = 160
+                isaac.left = 160
                 is_key_pressing += 1
                 bullet_dir = 0
             elif event.key == SDLK_LEFT:
-                character.left = 480
+                isaac.left = 480
                 is_key_pressing += 1
                 bullet_dir = 1
             elif event.key == SDLK_UP:
-                character.left = 320
+                isaac.left = 320
                 is_key_pressing += 1
                 bullet_dir = 2
             elif event.key == SDLK_DOWN:
-                character.left = 0
+                isaac.left = 0
                 is_key_pressing += 1
                 bullet_dir = 3
         elif event.type == SDL_KEYUP:
             if event.key == SDLK_d:
                 is_key_pressed -= 1
                 if is_key_pressed == 0:
-                    character.body_is_move = False
-                    character.body_frame = 0
-                character.velocity_x -= 20
+                    isaac.body_is_move = False
+                    isaac.body_frame = 0
+                isaac.velocity_x -= 20
             elif event.key == SDLK_a:
                 is_key_pressed -= 1
                 if is_key_pressed == 0:
-                    character.body_is_move = False
-                    character.body_frame = 0
-                character.velocity_x += 20
+                    isaac.body_is_move = False
+                    isaac.body_frame = 0
+                isaac.velocity_x += 20
             elif event.key == SDLK_w:
                 is_key_pressed -= 1
                 if is_key_pressed == 0:
-                    character.body_is_move = False
-                    character.body_frame = 0
-                character.velocity_y -= 20
+                    isaac.body_is_move = False
+                    isaac.body_frame = 0
+                isaac.velocity_y -= 20
             elif event.key == SDLK_s:
                 is_key_pressed -= 1
                 if is_key_pressed == 0:
-                    character.body_is_move = False
-                    character.body_frame = 0
-                character.velocity_y += 20
+                    isaac.body_is_move = False
+                    isaac.body_frame = 0
+                isaac.velocity_y += 20
             elif event.key == SDLK_RIGHT:
                 is_key_pressing -= 1
             elif event.key == SDLK_LEFT:
@@ -207,7 +207,7 @@ def update():
     for game_object in game_world.all_objects():
         game_object.update()
     if is_key_pressing >= 1:
-        bullet = Bullet(character.x, character.y, bullet_dir)
+        bullet = Bullet(isaac.x, isaac.y, bullet_dir)
         game_world.add_object(bullet, 1)
         is_bullet_shot = True
     pass
