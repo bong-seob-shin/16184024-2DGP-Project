@@ -4,6 +4,15 @@ import random
 BackGround_Width = 1280
 BackGround_Height = 960
 
+PIXEL_PER_METER = (10.0 / 0.3)
+RUN_SPEED_KMPH = 2q.0
+RUN_SPEED_MPM = (RUN_SPEED_KMPH* 1000.0/ 60.0)
+RUN_SPEED_MPS = (RUN_SPEED_MPM/ 60.0)
+RUN_SPEED_PPS = (RUN_SPEED_MPS*PIXEL_PER_METER)
+
+TIME_PER_ACTION = 0.5
+ACTION_PER_TIME = 4.0 / TIME_PER_ACTION
+PER_ACTION = 8
 
 class Gusher:
     image = None
@@ -13,7 +22,7 @@ class Gusher:
             Gusher.image = load_image('resorce/Gusher.png')
         self.x = BackGround_Width//2 + 100
         self.y = BackGround_Height//2
-        self.velocity = 20
+        self.velocity = RUN_SPEED_PPS
         self.dir = 1
         self.timer = 5
 

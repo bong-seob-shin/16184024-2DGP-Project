@@ -22,64 +22,6 @@ background = None
 font = None
 bullet = None
 
-class IssacHead:
-
-    def __init__(self):
-        self.x, self.y = BackGround_Width//2, BackGround_Height//2
-        self.frame = 0
-        self.image = load_image('resorce/isaac_head.png')
-        self.velocity_x = 0
-        self.velocity_y = 0
-        self.left = 0
-    def update(self):
-        self.frame = (self.frame+1) % 2
-        if self.x > BackGround_Width-180:
-            self.x = BackGround_Width-180
-        elif self.x < 180:
-            self.x = 180
-        else:
-            self.x += self.velocity_x
-        if self.y > BackGround_Height-150:
-            self.y = BackGround_Height-150
-        elif self.y < 220:
-            self.y = 220
-        else:
-            self.y += self.velocity_y
-    def draw(self):
-        self.image.clip_draw(self.frame*80+self.left, 0, 80, 80, self.x, self.y)
-    pass
-
-
-class IssacBody:
-
-    def __init__(self):
-        self.x, self.y = BackGround_Width//2-5, (BackGround_Height//2)-50
-        self.frame = 0
-        self.image = load_image('resorce/isaac_body.png')
-        self.velocity_x = 0
-        self.velocity_y = 0
-        self.is_move = False
-        self.bottom = 90
-    def update(self):
-        if self.is_move:
-            self.frame = (self.frame+1) % 8
-        if self.x > BackGround_Width-185:
-            self.x = BackGround_Width-185
-        elif self.x < 175:
-            self.x = 175
-        else:
-            self.x += self.velocity_x
-        if self.y > BackGround_Height-200:
-            self.y = BackGround_Height-200
-        elif self.y < 170:
-            self.y = 170
-        else:
-            self.y += self.velocity_y
-
-    def draw(self):
-        self.image.clip_draw(105*self.frame, self.bottom, 60, 60, self.x, self.y)
-
-
 
 
 def enter():
@@ -130,22 +72,22 @@ def handle_events():
                 running = False
             elif event.key == SDLK_d:
                 isaac.body_is_move = True
-                isaac.velocity_x += 20
+                isaac.velocity_x += isaac.velocity
                 isaac.body_bottom = 0
                 is_key_pressed += 1
             elif event.key == SDLK_a:
                 isaac.body_is_move = True
-                isaac.velocity_x -= 20
+                isaac.velocity_x -= isaac.velocity
                 isaac.body_bottom = 180
                 is_key_pressed += 1
             elif event.key == SDLK_w:
                 isaac.body_is_move = True
-                isaac.velocity_y += 20
+                isaac.velocity_y += isaac.velocity
                 isaac.body_bottom = 90
                 is_key_pressed += 1
             elif event.key == SDLK_s:
                 isaac.body_is_move = True
-                isaac.velocity_y -= 20
+                isaac.velocity_y -= isaac.velocity
                 isaac.body_bottom = 90
                 is_key_pressed += 1
             elif event.key == SDLK_RIGHT:
@@ -170,25 +112,25 @@ def handle_events():
                 if is_key_pressed == 0:
                     isaac.body_is_move = False
                     isaac.body_frame = 0
-                isaac.velocity_x -= 20
+                isaac.velocity_x -= isaac.velocity
             elif event.key == SDLK_a:
                 is_key_pressed -= 1
                 if is_key_pressed == 0:
                     isaac.body_is_move = False
                     isaac.body_frame = 0
-                isaac.velocity_x += 20
+                isaac.velocity_x += isaac.velocity
             elif event.key == SDLK_w:
                 is_key_pressed -= 1
                 if is_key_pressed == 0:
                     isaac.body_is_move = False
                     isaac.body_frame = 0
-                isaac.velocity_y -= 20
+                isaac.velocity_y -= isaac.velocity
             elif event.key == SDLK_s:
                 is_key_pressed -= 1
                 if is_key_pressed == 0:
                     isaac.body_is_move = False
                     isaac.body_frame = 0
-                isaac.velocity_y += 20
+                isaac.velocity_y += isaac.velocity
             elif event.key == SDLK_RIGHT:
                 is_key_pressing -= 1
             elif event.key == SDLK_LEFT:

@@ -7,6 +7,6 @@ BackGround_Width = 1280
 BackGround_Height = 960
 
 # fill here
-open_canvas(BackGround_Width, BackGround_Height)
+open_canvas(BackGround_Width, BackGround_Height, sync=True)
 game_framework.run(start_state)
 close_canvas()
