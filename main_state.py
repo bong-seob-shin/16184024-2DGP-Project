@@ -10,6 +10,8 @@ from Gusher import Gusher
 from Bullet import Bullet
 from BackGround import BackGround
 from Isaac import Isaac
+from Health import Health
+
 
 BackGround_Width = 1280
 BackGround_Height = 960
@@ -25,7 +27,7 @@ bullet = None
 
 
 def enter():
-    global isaac, background, is_key_pressed , is_key_pressing, bullet_dir, gusher
+    global isaac, background, is_key_pressed , is_attack_key_pressing, bullet_dir, gusher
     global BackGround_Width, BackGround_Height
     BackGround_Width = 1280
     BackGround_Height = 960
@@ -36,7 +38,7 @@ def enter():
     game_world.add_object(isaac, 1)
     game_world.add_object(gusher, 1)
     is_key_pressed = 0
-    is_key_pressing = 0
+    is_attack_key_pressing = 0
     bullet_dir = 0
     pass
 
@@ -55,7 +57,7 @@ def resume():
 
 def handle_events():
     global is_key_pressed
-    global is_key_pressing
+    global is_attack_key_pressing
     global bullet_dir
     global isaac
 
@@ -92,19 +94,19 @@ def handle_events():
                 is_key_pressed += 1
             elif event.key == SDLK_RIGHT:
                 isaac.left = 160
-                is_key_pressing += 1
+                is_attack_key_pressing += 1
                 bullet_dir = 0
             elif event.key == SDLK_LEFT:
                 isaac.left = 480
-                is_key_pressing += 1
+                is_attack_key_pressing += 1
                 bullet_dir = 1
             elif event.key == SDLK_UP:
                 isaac.left = 320
-                is_key_pressing += 1
+                is_attack_key_pressing += 1
                 bullet_dir = 2
             elif event.key == SDLK_DOWN:
                 isaac.left = 0
-                is_key_pressing += 1
+                is_attack_key_pressing += 1
                 bullet_dir = 3
         elif event.type == SDL_KEYUP:
             if event.key == SDLK_d:
@@ -132,23 +134,23 @@ def handle_events():
                     isaac.body_frame = 0
                 isaac.velocity_y += isaac.velocity
             elif event.key == SDLK_RIGHT:
-                is_key_pressing -= 1
+                is_attack_key_pressing -= 1
             elif event.key == SDLK_LEFT:
-                is_key_pressing -= 1
+                is_attack_key_pressing -= 1
             elif event.key == SDLK_UP:
-                is_key_pressing -= 1
+                is_attack_key_pressing -= 1
             elif event.key == SDLK_DOWN:
-                is_key_pressing -= 1
+                is_attack_key_pressing -= 1
 
     pass
 
 
 def update():
-    global is_key_pressing, bullet_dir, gusher, bullet, is_bullet_shot
+    global is_attack_key_pressing, bullet_dir, gusher, bullet, is_bullet_shot
     is_bullet_shot = False
     for game_object in game_world.all_objects():
         game_object.update()
-    if is_key_pressing >= 1:
+    if is_attack_key_pressing >= 1:
         bullet = Bullet(isaac.x, isaac.y, bullet_dir)
         game_world.add_object(bullet, 1)
         is_bullet_shot = True
