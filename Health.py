@@ -13,10 +13,10 @@ class Health:
             Health.image = load_image('resorce/redheart.png')
         self.x = x
         self.y = BackGround_Height - 50
-        self.state_heart = 0
-
+        self.heart_state = 0
+        self.is_empty_heart = False
     def draw(self):
-            self.image.clip_draw(60 * self.state_heart, 0, 60, 60, self.x, self.y)
+            self.image.clip_draw(60 * int(self.heart_state), 0, 60, 60, self.x, self.y)
 
     def update(self):
      pass

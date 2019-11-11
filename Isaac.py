@@ -17,6 +17,7 @@ TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 4.0 / TIME_PER_ACTION
 BODYFRAME_PER_ACTION = 8
 HEADFRAME_PER_ACTION = 2
+
 class Isaac:
 
     def __init__(self):
@@ -32,8 +33,10 @@ class Isaac:
         self.body_image = load_image('resorce/isaac_body.png')
         self.body_is_move = False
         self.body_bottom = 90
-        self.health = 3
-        self.heartArray = [Health(60*(i+1)) for i in range(self.health)]
+        self.start_health = 3
+        self.now_health = 0.5
+        self.health_index = self.start_health-1
+        self.heartArray = [Health(60*(i+1)) for i in range(self.start_health)]
     def update(self):
 
         self.frame = (self.frame+ HEADFRAME_PER_ACTION*ACTION_PER_TIME*game_framework.frame_time) % 2
@@ -63,14 +66,23 @@ class Isaac:
             self.body_y = 170
         else:
             self.body_y += self.velocity_y
-
+        if self.now_health < self.start_health:
+            if self.start_health-self.now_health <= 1:
+                self.heartArray[self.health_index].heart_state = (self.start_health-self.now_health)*2
+            elif self.start_health-self.now_health > 1:
+                if self.start_health-self.now_health <= 2:
+                    self.heartArray[self.health_index].heart_state = 2
+                    self.heartArray[self.health_index-1].heart_state =(self.start_health-self.now_health) * 2 - 2
+                else:
+                    self.heartArray[self.health_index].heart_state = 2
+                    self.heartArray[self.health_index-1].heart_state = 2
+                    self.heartArray[self.health_index - 2].heart_state = (self.start_health - self.now_health) * 2 - 4
 
     def draw(self):
         self.body_image.clip_draw(105 * int(self.body_frame), self.body_bottom, 60, 60, self.body_x, self.body_y)
         self.image.clip_draw(int(self.frame) * 80 + self.left, 0, 80, 80, self.x, self.y)
         for Health in self.heartArray:
             Health.draw()
-
     pass
 
 
