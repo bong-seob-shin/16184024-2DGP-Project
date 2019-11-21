@@ -25,6 +25,7 @@ class Gusher:
         self.velocity = RUN_SPEED_PPS
         self.dir = 1
         self.timer = 5
+        self.health = 10
 
     def update(self):
         self.timer -= 1
@@ -51,5 +52,10 @@ class Gusher:
 
     def draw(self):
         self.image.draw(self.x, self.y, 100, 100)
+        draw_rectangle(*self.get_bb())
+
+    def get_bb(self):
+        return self.x - 30, self.y -30, self.x + 30, self.y +20
+
 
     pass

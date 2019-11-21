@@ -34,7 +34,7 @@ class Isaac:
         self.body_is_move = False
         self.body_bottom = 90
         self.start_health = 3
-        self.now_health = 0.5
+        self.now_health = 3
         self.health_index = self.start_health-1
         self.heartArray = [Health(60*(i+1)) for i in range(self.start_health)]
     def update(self):
@@ -83,11 +83,13 @@ class Isaac:
         self.image.clip_draw(int(self.frame) * 80 + self.left, 0, 80, 80, self.x, self.y)
         for Health in self.heartArray:
             Health.draw()
-    pass
+        draw_rectangle(*self.get_bb())
+
 
     def get_bb(self):
-        return self.x - 20, self.y -50, self.x + 20, self.y +50
+        return self.x - 40, self.y -70, self.x + 40, self.y +40
 
+    pass
 
 
 

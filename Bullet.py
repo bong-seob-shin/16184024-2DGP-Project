@@ -19,20 +19,26 @@ class Bullet:
         if Bullet.image == None:
             Bullet.image = load_image('resorce/bullet.png')
         self.x, self.y, self.b_dir = x, y, b_dir
+        self.right_x, self.left_x, self.up_y, self.down_y = x+40, x-40, y+40, y-40
         self.velocity = RUN_SPEED_PPS
         self.start_x = self.x
         self.start_y = self.y
     def draw(self):
-        if self.b_dir == 0: #오른쪽
-            self.image.draw(self.x+40, self.y)
-        elif self.b_dir == 1: #왼쪽
-            self.image.draw(self.x-40, self.y)
-        elif self.b_dir == 2: #아래
-            self.image.draw(self.x, self.y+40)
-        elif self.b_dir == 3: #위
-            self.image.draw(self.x, self.y-40)
 
+        if self.b_dir == 0: #오른쪽
+            self.image.draw(self.right_x, self.y)
+        elif self.b_dir == 1: #왼쪽
+            self.image.draw(self.left_x, self.y)
+        elif self.b_dir == 2: #아래
+            self.image.draw(self.x, self.up_y)
+        elif self.b_dir == 3: #위
+            self.image.draw(self.x, self.down_y)
+        draw_rectangle(*self.get_bb())
     def update(self):
+        self.right_x = self.x+40
+        self.left_x = self.x-40
+        self.up_y = self.y+40
+        self.down_y = self.y-40
         if self.b_dir == 0: #오른쪽
             if self.x > self.start_x+300:
                 self.y -= 10
@@ -62,4 +68,18 @@ class Bullet:
             game_world.remove_object(self)
         elif self.y <self.start_y - 400 or self.y > self.start_y+400:
             game_world.remove_object(self)
+
+    def get_bb(self):
+        if self.b_dir == 0:  # 오른쪽
+            return self.right_x - 20, self.y - 20, self.right_x + 20, self.y + 20
+        elif self.b_dir == 1:  # 왼쪽
+            return self.left_x - 20, self.y - 20, self.left_x + 20, self.y + 20
+        elif self.b_dir == 2:  # 아래
+            return self.x - 20, self.up_y - 20, self.x + 20, self.up_y + 20
+        elif self.b_dir == 3:  # 위
+            return self.x - 20, self.down_y - 20, self.x + 20, self.down_y + 20
+
+
+
     pass
+

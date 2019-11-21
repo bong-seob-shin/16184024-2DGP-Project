@@ -28,8 +28,8 @@ bullet = None
 
 
 def enter():
-    global isaac, background, is_key_pressed , is_attack_key_pressing, bullet_dir, gusher
-    global BackGround_Width, BackGround_Height
+    global isaac, background, is_key_pressed , is_attack_key_pressing, bullet_dir, gusher, is_bullet_create
+    global BackGround_Width, BackGround_Height, invensibility_time, shot_term
     BackGround_Width = 1280
     BackGround_Height = 960
     isaac = Isaac()
@@ -41,6 +41,9 @@ def enter():
     is_key_pressed = 0
     is_attack_key_pressing = 0
     bullet_dir = 0
+    is_bullet_create = False
+    invensibility_time = 0
+    shot_term = 0
     pass
 
 def exit():
@@ -59,10 +62,10 @@ def collide(a, b):
     left_a, bottom_a, right_a, top_a = a.get_bb()
     left_b, bottom_b, right_b, top_b = b.get_bb()
 
-    if left_a > right_b: return  False
-    if right_a < left_b : return False
-    if top_a < bottom_b : return False
-    if bottom_a > top_b : return False
+    if left_a > right_b: return False
+    if right_a < left_b: return False
+    if top_a < bottom_b: return False
+    if bottom_a > top_b: return False
     return True
 
 
@@ -157,14 +160,35 @@ def handle_events():
 
 
 def update():
-    global is_attack_key_pressing, bullet_dir, gusher, bullet, is_bullet_shot
-    is_bullet_shot = False
+    global is_attack_key_pressing, bullet_dir, gusher, bullet, is_bullet_create,invensibility_time, shot_term
+
     for game_object in game_world.all_objects():
         game_object.update()
+
     if is_attack_key_pressing >= 1:
-        bullet = Bullet(isaac.x, isaac.y, bullet_dir)
-        game_world.add_object(bullet, 1)
-        is_bullet_shot = True
+        if shot_term < 0:
+            bullet = Bullet(isaac.x, isaac.y, bullet_dir)
+            game_world.add_object(bullet, 1)
+            shot_term = 3
+            if collide(gusher, bullet):
+                game_world.remove_object(bullet)
+                if gusher.health == 0:
+                    game_world.remove_object(gusher)
+                if gusher.health>0:
+                    gusher.health -= 1
+                    print(gusher.health)
+
+    if invensibility_time == 0:
+        if collide(isaac, gusher):
+            isaac.now_health -= 0.5
+            invensibility_time = 10
+    if invensibility_time >0:
+        invensibility_time -= 1
+    if shot_term >=0:
+        shot_term -= 1
+
+
+
     pass
 
 
