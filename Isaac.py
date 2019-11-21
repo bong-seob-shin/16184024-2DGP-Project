@@ -85,5 +85,9 @@ class Isaac:
             Health.draw()
     pass
 
+    def get_bb(self):
+        return self.x - 20, self.y -50, self.x + 20, self.y +50
+
+
 
 
