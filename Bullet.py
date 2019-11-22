@@ -23,6 +23,7 @@ class Bullet:
         self.velocity = RUN_SPEED_PPS
         self.start_x = self.x
         self.start_y = self.y
+        self.damage = 1
     def draw(self):
 
         if self.b_dir == 0: #오른쪽
@@ -35,10 +36,7 @@ class Bullet:
             self.image.draw(self.x, self.down_y)
         draw_rectangle(*self.get_bb())
     def update(self):
-        self.right_x = self.x+40
-        self.left_x = self.x-40
-        self.up_y = self.y+40
-        self.down_y = self.y-40
+
         if self.b_dir == 0: #오른쪽
             if self.x > self.start_x+300:
                 self.y -= 10
@@ -69,6 +67,10 @@ class Bullet:
         elif self.y <self.start_y - 400 or self.y > self.start_y+400:
             game_world.remove_object(self)
 
+        self.right_x = self.x + 40
+        self.left_x = self.x - 40
+        self.up_y = self.y + 40
+        self.down_y = self.y - 40
     def get_bb(self):
         if self.b_dir == 0:  # 오른쪽
             return self.right_x - 20, self.y - 20, self.right_x + 20, self.y + 20

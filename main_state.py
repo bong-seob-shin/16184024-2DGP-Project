@@ -29,7 +29,7 @@ bullet = None
 
 def enter():
     global isaac, background, is_key_pressed , is_attack_key_pressing, bullet_dir, gusher, is_bullet_create
-    global BackGround_Width, BackGround_Height, invensibility_time, shot_term
+    global BackGround_Width, BackGround_Height, invensibility_time, shot_term, bullets
     BackGround_Width = 1280
     BackGround_Height = 960
     isaac = Isaac()
@@ -44,6 +44,8 @@ def enter():
     is_bullet_create = False
     invensibility_time = 0
     shot_term = 0
+    bullets = []
+
     pass
 
 def exit():
@@ -160,23 +162,36 @@ def handle_events():
 
 
 def update():
-    global is_attack_key_pressing, bullet_dir, gusher, bullet, is_bullet_create,invensibility_time, shot_term
+    global is_attack_key_pressing, bullet_dir, gusher, bullet, is_bullet_create,invensibility_time, shot_term, bullets
 
     for game_object in game_world.all_objects():
         game_object.update()
 
     if is_attack_key_pressing >= 1:
         if shot_term < 0:
-            bullet = Bullet(isaac.x, isaac.y, bullet_dir)
-            game_world.add_object(bullet, 1)
+
+
+            if not is_bullet_create:
+                bullet = Bullet(isaac.x, isaac.y, bullet_dir)
+                game_world.add_object(bullet, 1)
+                bullets = [bullet]
+            else:
+                bullet = Bullet(isaac.x, isaac.y, bullet_dir)
+                game_world.add_object(bullet, 1)
+                bullets.append(bullet)
+
             shot_term = 3
-            if collide(gusher, bullet):
-                game_world.remove_object(bullet)
-                if gusher.health == 0:
-                    game_world.remove_object(gusher)
-                if gusher.health>0:
-                    gusher.health -= 1
-                    print(gusher.health)
+            is_bullet_create = True
+
+    for bullet in bullets:
+        if collide(gusher, bullet):
+            game_world.remove_object(bullet)
+            bullets.remove(bullet)
+            if gusher.health == 0:
+                game_world.remove_object(gusher)
+            if gusher.health > 0:
+                gusher.health -= 1
+                print(gusher.health)
 
     if invensibility_time == 0:
         if collide(isaac, gusher):
