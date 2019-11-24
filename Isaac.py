@@ -37,6 +37,7 @@ class Isaac:
         self.now_health = 3
         self.health_index = self.start_health-1
         self.heartArray = [Health(60*(i+1)) for i in range(self.start_health)]
+        self.is_death = False
     def update(self):
 
         self.frame = (self.frame+ HEADFRAME_PER_ACTION*ACTION_PER_TIME*game_framework.frame_time) % 2
@@ -77,10 +78,16 @@ class Isaac:
                     self.heartArray[self.health_index].heart_state = 2
                     self.heartArray[self.health_index-1].heart_state = 2
                     self.heartArray[self.health_index - 2].heart_state = (self.start_health - self.now_health) * 2 - 4
-
+        if self.now_health <=0:
+            self.is_death = True
+        if self.is_death:
+            self.image = load_image('resorce/isaac_death')
     def draw(self):
-        self.body_image.clip_draw(105 * int(self.body_frame), self.body_bottom, 60, 60, self.body_x, self.body_y)
-        self.image.clip_draw(int(self.frame) * 80 + self.left, 0, 80, 80, self.x, self.y)
+        if self.is_death:
+            self.image.draw(self.x,self.y, 70, 40)
+        else:
+            self.body_image.clip_draw(105 * int(self.body_frame), self.body_bottom, 60, 60, self.body_x, self.body_y)
+            self.image.clip_draw(int(self.frame) * 80 + self.left, 0, 80, 80, self.x, self.y)
         for Health in self.heartArray:
             Health.draw()
         draw_rectangle(*self.get_bb())
