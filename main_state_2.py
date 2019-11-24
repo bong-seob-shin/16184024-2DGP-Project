@@ -176,6 +176,8 @@ def handle_events():
             elif event.key == SDLK_DOWN:
                 is_attack_key_pressing -= 1
 
+                
+
     pass
 
 
