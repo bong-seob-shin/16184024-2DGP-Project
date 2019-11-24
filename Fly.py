@@ -27,7 +27,7 @@ class Fly:
         self.x = random.randint(200, 1000)
         self.y = random.randint(200, 750)
         self.velocity = RUN_SPEED_PPS
-        self.dir = 1
+        self.dir = random.randint(0,1)
         self.timer = 10
         self.health = 5
         self.frame = 0

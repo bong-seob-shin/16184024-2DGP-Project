@@ -13,6 +13,7 @@ from BackGround import BackGround
 from Door import Door, InDoor
 from Isaac import Isaac
 from Fly import Fly
+from BigFly import  BigFly
 from Health import Health
 
 BackGround_Width = 1280
@@ -31,7 +32,7 @@ bullet = None
 def enter():
     global isaac, background, is_key_pressed, is_attack_key_pressing, bullet_dir, gushers, is_bullet_create
     global BackGround_Width, BackGround_Height, invensibility_time, shot_term, bullets, door, indoor, monster_count
-    global  flies
+    global  flies, big_flies
     BackGround_Width = 1280
     BackGround_Height = 960
     isaac = Isaac()
@@ -51,8 +52,8 @@ def enter():
     indoor.x = door_position[1]
     entrance_indoor = InDoor()
     entrance_indoor.x = door_position[0]
-    flies = [Fly() for i in range(monster_count)]
-
+    flies = [Fly() for i in range(monster_count-5)]
+    big_flies = [BigFly() for i in range(monster_count-15)]
 
     game_world.add_object(background,0)
     game_world.add_object(indoor, 1)
@@ -61,6 +62,7 @@ def enter():
     game_world.add_object(entrance_door, 1)
     game_world.add_object(entrance_indoor, 1)
     game_world.add_objects(flies, 1)
+    game_world.add_objects(big_flies, 1)
     is_key_pressed = 0
     is_attack_key_pressing = 0
     bullet_dir = 0
@@ -185,11 +187,13 @@ def handle_events():
 
 
 
+def get_isaac():
+    return isaac
 
 
 def update():
     global is_attack_key_pressing, bullet_dir, gushers, bullet, is_bullet_create, invensibility_time, shot_term, bullets
-    global flies, monster_count, indoor
+    global flies, monster_count, indoor, big_flies
     for game_object in game_world.all_objects():
         game_object.update()
 
@@ -227,6 +231,27 @@ def update():
             if collide(isaac, fly):
                 isaac.now_health -= 0.5
                 invensibility_time = 10
+
+    for big_fly in big_flies:
+        for bullet in bullets:
+            if collide(big_fly, bullet):
+                game_world.remove_object(bullet)
+                bullets.remove(bullet)
+                if big_fly.health < 1:
+                    big_flies.remove(big_fly)
+                    game_world.remove_object(big_fly)
+                    if monster_count > 0:
+                        monster_count -= 1
+                if big_fly.health > 0:
+                    big_fly.health -= bullet.damage
+                    print(big_fly.health)
+
+    if invensibility_time == 0:
+        for big_fly in flies:
+            if collide(isaac, big_fly):
+                isaac.now_health -= 0.5
+                invensibility_time = 10
+
 
     if invensibility_time == 0:
             invensibility_time = 10

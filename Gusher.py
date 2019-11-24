@@ -2,8 +2,6 @@ from pico2d import *
 import random
 from BehaviorTree import SelectorNode, SequenceNode, Node, LeafNode, BehaviorTree
 import game_framework
-from Isaac import  Isaac
-
 
 BackGround_Width = 1280
 BackGround_Height = 960
@@ -28,7 +26,7 @@ class Gusher:
         self.y = random.randint(200, 750)
         self.velocity = RUN_SPEED_PPS
         self.dir = 1
-        self.timer = 10
+        self.timer = 1
         self.health = 10
         self.frame = 0
         self.bottom = 0
@@ -70,26 +68,6 @@ class Gusher:
     def update(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
         self.bt.run()
-        # self.timer -= 1
-        # if self.timer == 0:
-        #     self.dir = random.randint(1, 4)
-        #     self.timer = 5
-        # if self.dir == 1 :
-        #    self.x = self.x + self.velocity
-        # elif self.dir == 2:
-        #     self.x = self.x - self.velocity
-        # elif self.dir == 3:
-        #     self.y = self.y + self.velocity
-        # elif self.dir == 4:
-        #     self.y = self.y - self.velocity
-        #
-        # if self.x > BackGround_Width-180:
-        #     self.x = BackGround_Width-180
-        # elif self.x < 180:
-        #     self.x = 180
-        # if self.y > BackGround_Height-150:
-        #     self.y = BackGround_Height-150
-        # elif self.y < 220:
-        #     self.y = 220
+
 
     pass
