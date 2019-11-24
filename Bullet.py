@@ -73,13 +73,13 @@ class Bullet:
         self.down_y = self.y - 40
     def get_bb(self):
         if self.b_dir == 0:  # 오른쪽
-            return self.right_x - 20, self.y - 20, self.right_x + 20, self.y + 20
+            return self.right_x - 10, self.y - 10, self.right_x + 10, self.y + 10
         elif self.b_dir == 1:  # 왼쪽
-            return self.left_x - 20, self.y - 20, self.left_x + 20, self.y + 20
+            return self.left_x - 10, self.y - 10, self.left_x + 10, self.y + 10
         elif self.b_dir == 2:  # 아래
-            return self.x - 20, self.up_y - 20, self.x + 20, self.up_y + 20
+            return self.x - 10, self.up_y - 10, self.x + 10, self.up_y + 10
         elif self.b_dir == 3:  # 위
-            return self.x - 20, self.down_y - 20, self.x + 20, self.down_y + 20
+            return self.x - 10, self.down_y - 10, self.x + 10, self.down_y + 10
 
 
 

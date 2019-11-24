@@ -15,14 +15,15 @@ from Isaac import Isaac
 from Fly import Fly
 from BigFly import BigFly
 from EnemyBullet_BigFly import EnemyBulletBigFly
-import main_state_3
+import main_state_2
+from Gaper import  Gaper
 from Health import Health
 
 BackGround_Width = 1280
 BackGround_Height = 960
 door_position = [(130), (1150)]
 
-name = "MainState_2"
+name = "MainState_3"
 
 character_head = None
 character_body = None
@@ -34,17 +35,18 @@ bullet = None
 def enter():
     global isaac, background, is_key_pressed, is_attack_key_pressing, bullet_dir, gushers, is_bullet_create
     global BackGround_Width, BackGround_Height, invensibility_time, shot_term, bullets, door, indoor, monster_count
-    global  flies, big_flies, enemy_bullets, is_enemy_bullet_create
+    global  flies, enemy_bullets, is_enemy_bullet_create,gapers
+
     BackGround_Width = 1280
     BackGround_Height = 960
     isaac = Isaac()
     isaac.x = 200
     isaac.y = BackGround_Height//2
     isaac.body_x, isaac.body_y = isaac.x - 5, isaac.y - 50
-    isaac.velocity_x = main_state.isaac.velocity_x
-    isaac.velocity_y = main_state.isaac.velocity_y
-    isaac.now_health = main_state.hp
-    monster_count = 0
+    isaac.velocity_x = main_state_2.isaac.velocity_x
+    isaac.velocity_y = main_state_2.isaac.velocity_y
+    isaac.now_health = main_state_2.hp
+    monster_count = 5
     background = BackGround()
     door = Door()
     door.x = door_position[1]
@@ -55,15 +57,16 @@ def enter():
     entrance_indoor = InDoor()
     entrance_indoor.x = door_position[0]
     flies = [Fly() for i in range(monster_count)]
-    big_flies = [BigFly() for i in range(monster_count)]
+    gapers = [Gaper() for i in range(monster_count)]
+
     game_world.add_object(background,0)
     game_world.add_object(indoor, 1)
     game_world.add_object(door, 1)
     game_world.add_object(isaac, 1)
     game_world.add_object(entrance_door, 1)
     game_world.add_object(entrance_indoor, 1)
-    game_world.add_objects(flies, 1)
-    game_world.add_objects(big_flies, 1)
+    #game_world.add_objects(flies, 1)
+    game_world.add_objects(gapers, 1)
     is_key_pressed = 0
     is_attack_key_pressing = 0
     bullet_dir = 0
@@ -78,8 +81,7 @@ def enter():
 
 
 def exit():
-    global hp
-    hp = isaac.now_health
+
     pass
 
 
@@ -155,7 +157,6 @@ def handle_events():
                 isaac.left = 0
                 is_attack_key_pressing += 1
                 bullet_dir = 3
-
         elif event.type == SDL_KEYUP:
             if event.key == SDLK_d:
                 is_key_pressed -= 1
@@ -198,7 +199,8 @@ def get_isaac():
 
 def update():
     global is_attack_key_pressing, bullet_dir, gushers, bullet, is_bullet_create, invensibility_time, shot_term
-    global flies, monster_count, indoor, big_flies, enemy_bullets,bullets, is_enemy_bullet_create, enemy_big_fly_shot_term
+    global flies, monster_count, indoor, enemy_bullets,bullets, is_enemy_bullet_create
+    global gapers
     for game_object in game_world.all_objects():
         game_object.update()
 
@@ -217,19 +219,19 @@ def update():
             shot_term = 3
             is_bullet_create = True
 
-    for big_fly in big_flies:
-        if big_fly.is_shot:
-            if big_fly.shot_term == 0:
+    for gaper in gapers:
+        if gaper.is_shot:
+            if gaper.shot_term == 0:
                 if not is_enemy_bullet_create:
-                    enemy_bullet = EnemyBulletBigFly(big_fly.x, big_fly.y, big_fly.dir)
+                    enemy_bullet = EnemyBulletBigFly(gaper.x, gaper.y, gaper.dir)
                     game_world.add_object(enemy_bullet, 1)
                     enemy_bullets = [enemy_bullet]
                 else:
-                    enemy_bullet = EnemyBulletBigFly(big_fly.x, big_fly.y, big_fly.dir)
+                    enemy_bullet = EnemyBulletBigFly(gaper.x, gaper.y, gaper.dir)
                     game_world.add_object(enemy_bullet, 1)
                     enemy_bullets.append(enemy_bullet)
                 is_enemy_bullet_create = True
-                big_fly.shot_term = 70
+                gaper.shot_term = 70
 
     for fly in flies:
         for bullet in bullets:
@@ -250,31 +252,25 @@ def update():
             if collide(isaac, fly):
                 isaac.now_health -= 0.5
                 invensibility_time = 10
-        for big_fly in big_flies:
-            if collide(isaac, big_fly):
+        for gaper in gapers:
+            if collide(isaac, gaper):
                 isaac.now_health -= 0.5
                 invensibility_time = 10
 
-    for big_fly in big_flies:
+    for gaper in gapers:
         for bullet in bullets:
-            if collide(big_fly, bullet):
+            if collide(gaper, bullet):
                 game_world.remove_object(bullet)
                 bullets.remove(bullet)
-                if big_fly.health < 1:
-                    big_flies.remove(big_fly)
-                    game_world.remove_object(big_fly)
+                if gaper.health < 1:
+                    gapers.remove(gaper)
+                    game_world.remove_object(gaper)
                     if monster_count > 0:
                         monster_count -= 1
-                if big_fly.health > 0:
-                    big_fly.health -= bullet.damage
-                    print(big_fly.health)
+                if gaper.health > 0:
+                    gaper.health -= bullet.damage
+                    print(gaper.health)
 
-    for enemy_bullet in enemy_bullets:
-        if collide(isaac, enemy_bullet):
-            game_world.remove_object(enemy_bullet)
-            enemy_bullets.remove(enemy_bullet)
-            isaac.now_health -= enemy_bullet.damage
-            invensibility_time = 10
 
 
 
@@ -288,10 +284,12 @@ def update():
     if monster_count == 0:
         indoor.open_door = True
 
-    if collide(isaac, indoor):
-        if indoor.open_door:
-            game_world.remove_object(isaac)
-            game_framework.change_state(main_state_3)
+    # if collide(isaac, indoor):
+    #     if indoor.open_door:
+    #         for game_object in game_world.all_objects():
+    #              game_world.remove_object(game_object)
+    #         game_framework.change_state(main_state_3)
+
     pass
 
 
