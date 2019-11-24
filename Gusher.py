@@ -28,7 +28,7 @@ class Gusher:
         self.y = random.randint(200, 750)
         self.velocity = RUN_SPEED_PPS
         self.dir = 1
-        self.timer = 5
+        self.timer = 10
         self.health = 10
         self.frame = 0
         self.bottom = 0

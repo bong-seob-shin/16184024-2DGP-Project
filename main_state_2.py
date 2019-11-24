@@ -12,7 +12,7 @@ from Bullet import Bullet
 from BackGround import BackGround
 from Door import Door, InDoor
 from Isaac import Isaac
-
+from Fly import Fly
 from Health import Health
 
 BackGround_Width = 1280
@@ -31,13 +31,17 @@ bullet = None
 def enter():
     global isaac, background, is_key_pressed, is_attack_key_pressing, bullet_dir, gushers, is_bullet_create
     global BackGround_Width, BackGround_Height, invensibility_time, shot_term, bullets, door, indoor, monster_count
+    global  flies
     BackGround_Width = 1280
     BackGround_Height = 960
     isaac = Isaac()
-    isaac.velocity_x += isaac.velocity
+    isaac.x = 200
+    isaac.y = BackGround_Height//2
+    isaac.body_x, isaac.body_y = isaac.x - 5, isaac.y - 50
+    isaac.velocity_x = main_state.isaac.velocity_x
+    isaac.velocity_y = main_state.isaac.velocity_y
     isaac.now_health = main_state.hp
-    print(isaac.now_health)
-    monster_count = 10
+    monster_count = 20
     background = BackGround()
     door = Door()
     door.x = door_position[1]
@@ -47,6 +51,8 @@ def enter():
     indoor.x = door_position[1]
     entrance_indoor = InDoor()
     entrance_indoor.x = door_position[0]
+    flies = [Fly() for i in range(monster_count)]
+
 
     game_world.add_object(background,0)
     game_world.add_object(indoor, 1)
@@ -54,6 +60,7 @@ def enter():
     game_world.add_object(isaac, 1)
     game_world.add_object(entrance_door, 1)
     game_world.add_object(entrance_indoor, 1)
+    game_world.add_objects(flies, 1)
     is_key_pressed = 0
     is_attack_key_pressing = 0
     bullet_dir = 0
@@ -178,12 +185,11 @@ def handle_events():
 
 
 
-    pass
 
 
 def update():
     global is_attack_key_pressing, bullet_dir, gushers, bullet, is_bullet_create, invensibility_time, shot_term, bullets
-    global gusher, monster_count, indoor
+    global flies, monster_count, indoor
     for game_object in game_world.all_objects():
         game_object.update()
 
@@ -202,9 +208,28 @@ def update():
             shot_term = 3
             is_bullet_create = True
 
+    for fly in flies:
+        for bullet in bullets:
+            if collide(fly, bullet):
+                game_world.remove_object(bullet)
+                bullets.remove(bullet)
+                if fly.health < 1:
+                    flies.remove(fly)
+                    game_world.remove_object(fly)
+                    if monster_count > 0:
+                        monster_count -= 1
+                if fly.health > 0:
+                    fly.health -= bullet.damage
+                    print(fly.health)
 
     if invensibility_time == 0:
+        for fly in flies:
+            if collide(isaac, fly):
+                isaac.now_health -= 0.5
                 invensibility_time = 10
+
+    if invensibility_time == 0:
+            invensibility_time = 10
     if invensibility_time > 0:
         invensibility_time -= 1
     if shot_term >= 0:
@@ -213,9 +238,11 @@ def update():
     if monster_count == 0:
         indoor.open_door = True
 
-    if indoor.open_door:
-        game_framework.quit()
-        game_framework.change_state()
+    # if collide(isaac, indoor):
+    #     if indoor.open_door:
+    #         for game_object in game_world.all_objects():
+    #             game_world.remove_object(game_object)
+    #         game_framework.change_state(main_state_2)
 
     pass
 
