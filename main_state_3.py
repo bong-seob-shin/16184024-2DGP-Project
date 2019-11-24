@@ -46,7 +46,7 @@ def enter():
     isaac.velocity_x = main_state_2.isaac.velocity_x
     isaac.velocity_y = main_state_2.isaac.velocity_y
     isaac.now_health = main_state_2.hp
-    monster_count = 2
+    monster_count = 1
     background = BackGround()
     door = Door()
     door.x = door_position[1]

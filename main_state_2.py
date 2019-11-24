@@ -44,7 +44,7 @@ def enter():
     isaac.velocity_x = main_state.isaac.velocity_x
     isaac.velocity_y = main_state.isaac.velocity_y
     isaac.now_health = main_state.hp
-    monster_count = 5
+    monster_count = 2
     background = BackGround()
     door = Door()
     door.x = door_position[1]
@@ -54,8 +54,8 @@ def enter():
     indoor.x = door_position[1]
     entrance_indoor = InDoor()
     entrance_indoor.x = door_position[0]
-    flies = [Fly() for i in range(monster_count-2)]
-    big_flies = [BigFly() for i in range(monster_count-3)]
+    flies = [Fly() for i in range(monster_count-1)]
+    big_flies = [BigFly() for i in range(monster_count-1)]
     game_world.add_object(background,0)
     game_world.add_object(indoor, 1)
     game_world.add_object(door, 1)
