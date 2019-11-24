@@ -1,4 +1,5 @@
 from pico2d import *
+import main_state
 
 BackGround_Width = 1280
 BackGround_Height = 960

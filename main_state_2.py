@@ -6,20 +6,20 @@ from pico2d import *
 import game_world
 import game_framework
 import pause_state
+import main_state
 from Gusher import Gusher
 from Bullet import Bullet
 from BackGround import BackGround
-from Door import  Door, InDoor
+from Door import Door, InDoor
 from Isaac import Isaac
-import main_state_2
-from Health import Health
 
+from Health import Health
 
 BackGround_Width = 1280
 BackGround_Height = 960
 door_position = [(130), (1150)]
 
-name = "MainState"
+name = "MainState_2"
 
 character_head = None
 character_body = None
@@ -28,27 +28,32 @@ font = None
 bullet = None
 
 
-
-
 def enter():
-    global isaac, background, is_key_pressed , is_attack_key_pressing, bullet_dir, gushers, is_bullet_create
+    global isaac, background, is_key_pressed, is_attack_key_pressing, bullet_dir, gushers, is_bullet_create
     global BackGround_Width, BackGround_Height, invensibility_time, shot_term, bullets, door, indoor, monster_count
-
     BackGround_Width = 1280
     BackGround_Height = 960
     isaac = Isaac()
+    isaac.velocity_x += isaac.velocity
+    isaac.now_health = main_state.hp
+    print(isaac.now_health)
     monster_count = 10
-    gushers = [Gusher() for i in range (monster_count)]
     background = BackGround()
     door = Door()
     door.x = door_position[1]
+    entrance_door = Door()
+    entrance_door.x = door_position[0]
     indoor = InDoor()
     indoor.x = door_position[1]
-    game_world.add_object(background, 0)
-    game_world.add_object(indoor,1)
-    game_world.add_object(door,1)
+    entrance_indoor = InDoor()
+    entrance_indoor.x = door_position[0]
+
+    game_world.add_object(background,0)
+    game_world.add_object(indoor, 1)
+    game_world.add_object(door, 1)
     game_world.add_object(isaac, 1)
-    game_world.add_objects(gushers, 1)
+    game_world.add_object(entrance_door, 1)
+    game_world.add_object(entrance_indoor, 1)
     is_key_pressed = 0
     is_attack_key_pressing = 0
     bullet_dir = 0
@@ -59,9 +64,9 @@ def enter():
 
     pass
 
+
 def exit():
-    global hp
-    hp = isaac.now_health
+
     pass
 
 
@@ -71,6 +76,7 @@ def pause():
 
 def resume():
     pass
+
 
 def collide(a, b):
     left_a, bottom_a, right_a, top_a = a.get_bb()
@@ -174,14 +180,13 @@ def handle_events():
 
 
 def update():
-    global is_attack_key_pressing, bullet_dir, gushers, bullet, is_bullet_create,invensibility_time, shot_term, bullets
-    global  gusher, monster_count, indoor
+    global is_attack_key_pressing, bullet_dir, gushers, bullet, is_bullet_create, invensibility_time, shot_term, bullets
+    global gusher, monster_count, indoor
     for game_object in game_world.all_objects():
         game_object.update()
 
     if is_attack_key_pressing >= 1:
         if shot_term < 0:
-
 
             if not is_bullet_create:
                 bullet = Bullet(isaac.x, isaac.y, bullet_dir)
@@ -195,38 +200,20 @@ def update():
             shot_term = 3
             is_bullet_create = True
 
-    for gusher in gushers:
-        for bullet in bullets:
-            if collide(gusher, bullet):
-                game_world.remove_object(bullet)
-                bullets.remove(bullet)
-                if gusher.health < 1:
-                    gushers.remove(gusher)
-                    game_world.remove_object(gusher)
-                    if monster_count>0:
-                        monster_count -= 1
-                if gusher.health > 0:
-                    gusher.health -= bullet.damage
-                    print(gusher.health)
 
     if invensibility_time == 0:
-        for gusher in gushers:
-            if collide(isaac, gusher):
-                isaac.now_health -= 0.5
                 invensibility_time = 10
-    if invensibility_time >0:
+    if invensibility_time > 0:
         invensibility_time -= 1
-    if shot_term >=0:
+    if shot_term >= 0:
         shot_term -= 1
 
     if monster_count == 0:
         indoor.open_door = True
 
-    if collide(isaac, indoor):
-        if indoor.open_door :
-            for game_object in game_world.all_objects():
-                game_world.remove_object(game_object)
-            game_framework.change_state(main_state_2)
+    if indoor.open_door:
+        game_framework.quit()
+        game_framework.change_state()
 
     pass
 

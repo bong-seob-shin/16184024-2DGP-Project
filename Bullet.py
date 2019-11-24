@@ -23,7 +23,7 @@ class Bullet:
         self.velocity = RUN_SPEED_PPS
         self.start_x = self.x
         self.start_y = self.y
-        self.damage = 1
+        self.damage = 10
     def draw(self):
 
         if self.b_dir == 0: #오른쪽
