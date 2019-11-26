@@ -1,17 +1,17 @@
 import game_framework
 from pico2d import *
-import main_state
 import  game_world
-name = "TitleState"
+import  title_state
+name = "DeathState"
 image = None
 
 
 def enter():
     global image, BackGround_Width, BackGround_Height
-    image = load_image('resorce/title1.png')
+    image = load_image('resorce/death image.png')
     BackGround_Width = 1280
     BackGround_Height = 960
-    game_world.objects = [[], []]
+
     pass
 
 
@@ -30,13 +30,16 @@ def handle_events():
             if (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
                 game_framework.quit
             elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
-                game_framework.change_state(main_state)
+                game_framework.change_state(title_state)
     pass
 
 
 def draw():
     clear_canvas()
-    image.draw(BackGround_Width//2, BackGround_Height//2)
+
+    for game_object in game_world.all_objects():
+        game_object.draw()
+    image.draw(BackGround_Width // 2, BackGround_Height // 2)
     update_canvas()
     pass
 

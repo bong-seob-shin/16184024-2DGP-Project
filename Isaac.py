@@ -2,6 +2,7 @@ from pico2d import *
 import main_state
 import game_framework
 from Health import  Health
+import game_world
 
 BackGround_Width = 1280
 BackGround_Height = 960
@@ -81,10 +82,10 @@ class Isaac:
         if self.now_health <=0:
             self.is_death = True
         if self.is_death:
-            self.image = load_image('resorce/isaac_death')
+            self.image = load_image('resorce/isaac_death.png')
     def draw(self):
         if self.is_death:
-            self.image.draw(self.x,self.y, 70, 40)
+            self.image.draw(self.x,self.y, 150, 60)
         else:
             self.body_image.clip_draw(105 * int(self.body_frame), self.body_bottom, 60, 60, self.body_x, self.body_y)
             self.image.clip_draw(int(self.frame) * 80 + self.left, 0, 80, 80, self.x, self.y)

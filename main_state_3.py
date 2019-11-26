@@ -36,7 +36,7 @@ def enter():
     global isaac, background, is_key_pressed, is_attack_key_pressing, bullet_dir, gushers, is_bullet_create
     global BackGround_Width, BackGround_Height, invensibility_time, shot_term, bullets, door, indoor, monster_count
     global  flies, enemy_bullets, is_enemy_bullet_create,gapers
-
+    game_world.objects = [[], []]
     BackGround_Width = 1280
     BackGround_Height = 960
     isaac = Isaac()

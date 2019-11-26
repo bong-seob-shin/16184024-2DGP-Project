@@ -12,6 +12,7 @@ from BackGround import BackGround
 from Door import  Door, InDoor
 from Isaac import Isaac
 import main_state_2
+import death_state
 from Health import Health
 
 
@@ -33,7 +34,7 @@ bullet = None
 def enter():
     global isaac, background, is_key_pressed , is_attack_key_pressing, bullet_dir, gushers, is_bullet_create
     global BackGround_Width, BackGround_Height, invensibility_time, shot_term, bullets, door, indoor, monster_count
-
+    game_world.objects = [[], []]
     BackGround_Width = 1280
     BackGround_Height = 960
     isaac = Isaac()
@@ -224,12 +225,13 @@ def update():
 
     if collide(isaac, indoor):
         if indoor.open_door :
-            for game_object in game_world.all_objects():
-                game_world.remove_object(game_object)
             game_framework.change_state(main_state_2)
 
     pass
 
+    if isaac.is_death:
+
+        game_framework.change_state(death_state)
 
 def draw():
     clear_canvas()

@@ -16,6 +16,7 @@ from Fly import Fly
 from BigFly import BigFly
 from EnemyBullet_BigFly import EnemyBulletBigFly
 import main_state_3
+import death_state
 from Health import Health
 
 BackGround_Width = 1280
@@ -35,6 +36,7 @@ def enter():
     global isaac, background, is_key_pressed, is_attack_key_pressing, bullet_dir, gushers, is_bullet_create
     global BackGround_Width, BackGround_Height, invensibility_time, shot_term, bullets, door, indoor, monster_count
     global  flies, big_flies, enemy_bullets, is_enemy_bullet_create
+    game_world.objects = [[],[]]
     BackGround_Width = 1280
     BackGround_Height = 960
     isaac = Isaac()
@@ -290,10 +292,11 @@ def update():
 
     if collide(isaac, indoor):
         if indoor.open_door:
-            game_world.remove_object(isaac)
             game_framework.change_state(main_state_3)
     pass
 
+    if isaac.is_death:
+        game_framework.change_state(death_state)
 
 def draw():
     clear_canvas()
