@@ -37,9 +37,9 @@ class Mulligan:
 
     def draw(self):
         draw_rectangle(*self.get_bb())
-        self.image.clip_draw(int(self.frame) * 100, 80*self.bottom, 80, 80, self.x, self.y)
+        self.image.clip_draw(int(self.frame) * 100, self.bottom, 80, 40, self.x, self.y)
     def get_bb(self):
-        return self.x - 80, self.y - 80, self.x + 80, self.y +80
+        return self.x - 40, self.y - 40, self.x + 40, self.y +40
 
     def calculate_current_position(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
@@ -50,11 +50,14 @@ class Mulligan:
 
 
     def find_player_for_runaway(self):
-    def find_player_for_runaway(self):
         isaac = main_state_3.get_isaac()
         distance = (isaac.x - self.x) ** 2 + (isaac.y - self.y) ** 2
         if distance < (PIXEL_PER_METER * 10) ** 2:
-            self.dir = -math.atan2(isaac.y - self.y, isaac.x - self.x)
+            self.dir = -math.atan2(isaac.y-self.y, self.x- isaac.x)
+            if self.dir > 0:
+                self.bottom = 0
+            elif self.dir <= 0:
+                self.bottom = 40
             return BehaviorTree.SUCCESS
         else:
             return BehaviorTree.FAIL
@@ -63,6 +66,7 @@ class Mulligan:
     def move_to_player(self):
         self.speed = RUN_SPEED_PPS
         self.calculate_current_position()
+        self.dir = self.dir*-1
         return BehaviorTree.SUCCESS
         pass
 
@@ -76,7 +80,7 @@ class Mulligan:
         pass
 
     def update(self):
-        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 6
         self.bt.run()
 
 

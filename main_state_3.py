@@ -253,7 +253,7 @@ def update():
                 game_world.remove_object(bullet)
                 bullets.remove(bullet)
                 if mulligan.health < 1:
-                    flies.remove(mulligan)
+                    mulligans.remove(mulligan)
                     game_world.remove_object(mulligan)
                     if monster_count > 0:
                         monster_count -= 1
