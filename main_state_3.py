@@ -17,6 +17,7 @@ from BigFly import BigFly
 from EnemyBullet_BigFly import EnemyBulletBigFly
 import main_state_2
 from Gaper import  Gaper
+from Mulligan import Mulligan
 from Health import Health
 
 BackGround_Width = 1280
@@ -35,7 +36,7 @@ bullet = None
 def enter():
     global isaac, background, is_key_pressed, is_attack_key_pressing, bullet_dir, gushers, is_bullet_create
     global BackGround_Width, BackGround_Height, invensibility_time, shot_term, bullets, door, indoor, monster_count
-    global  flies, enemy_bullets, is_enemy_bullet_create,gapers
+    global  flies, enemy_bullets, is_enemy_bullet_create,gapers , mulligans
     game_world.objects = [[], []]
     BackGround_Width = 1280
     BackGround_Height = 960
@@ -46,7 +47,7 @@ def enter():
     isaac.velocity_x = main_state_2.isaac.velocity_x
     isaac.velocity_y = main_state_2.isaac.velocity_y
     isaac.now_health = main_state_2.hp
-    monster_count = 1
+    monster_count = 15
     background = BackGround()
     door = Door()
     door.x = door_position[1]
@@ -56,8 +57,10 @@ def enter():
     indoor.x = door_position[1]
     entrance_indoor = InDoor()
     entrance_indoor.x = door_position[0]
-    flies = [Fly() for i in range(monster_count)]
-    gapers = [Gaper() for i in range(monster_count)]
+    flies = [Fly() for i in range(6)]
+    gapers = [Gaper() for i in range(4)]
+    mulligans = [Mulligan() for i in range (5)]
+
 
     game_world.add_object(background,0)
     game_world.add_object(indoor, 1)
@@ -65,8 +68,9 @@ def enter():
     game_world.add_object(isaac, 1)
     game_world.add_object(entrance_door, 1)
     game_world.add_object(entrance_indoor, 1)
-    #game_world.add_objects(flies, 1)
+    game_world.add_objects(flies, 1)
     game_world.add_objects(gapers, 1)
+    game_world.add_objects(mulligans ,1)
     is_key_pressed = 0
     is_attack_key_pressing = 0
     bullet_dir = 0
@@ -195,7 +199,7 @@ def get_isaac():
 
 def update():
     global is_attack_key_pressing, bullet_dir, gushers, bullet, is_bullet_create, invensibility_time, shot_term
-    global flies, monster_count, indoor, enemy_bullets,bullets, is_enemy_bullet_create
+    global flies, monster_count, indoor, enemy_bullets,bullets, is_enemy_bullet_create, mulligans
     global gapers
     for game_object in game_world.all_objects():
         game_object.update()
@@ -243,9 +247,27 @@ def update():
                     fly.health -= bullet.damage
                     print(fly.health)
 
+    for mulligan in mulligans:
+        for bullet in bullets:
+            if collide(mulligan, bullet):
+                game_world.remove_object(bullet)
+                bullets.remove(bullet)
+                if mulligan.health < 1:
+                    flies.remove(mulligan)
+                    game_world.remove_object(mulligan)
+                    if monster_count > 0:
+                        monster_count -= 1
+                if mulligan.health > 0:
+                    mulligan.health -= bullet.damage
+                    print(mulligan.health)
+
     if invensibility_time == 0:
         for fly in flies:
             if collide(isaac, fly):
+                isaac.now_health -= 0.5
+                invensibility_time = 10
+        for mulligan in mulligans:
+            if collide(isaac, mulligan):
                 isaac.now_health -= 0.5
                 invensibility_time = 10
         for gaper in gapers:
