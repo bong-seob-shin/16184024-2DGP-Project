@@ -8,7 +8,7 @@ image = None
 
 def enter():
     global image, BackGround_Width, BackGround_Height
-    image = load_image('resorce/death image.png')
+    image = load_image('resource/death image.png')
     BackGround_Width = 1280
     BackGround_Height = 960
 

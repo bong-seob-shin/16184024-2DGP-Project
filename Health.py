@@ -10,7 +10,7 @@ class Health:
 
     def __init__(self, x = 50):
         if Health.image == None:
-            Health.image = load_image('resorce/redheart.png')
+            Health.image = load_image('resource/redheart.png')
         self.x = x
         self.y = BackGround_Height - 50
         self.heart_state = 0

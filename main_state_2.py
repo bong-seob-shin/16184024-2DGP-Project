@@ -18,7 +18,7 @@ from EnemyBullet_BigFly import EnemyBulletBigFly
 import main_state_3
 import death_state
 from Health import Health
-
+from Needle import  Needle
 BackGround_Width = 1280
 BackGround_Height = 960
 door_position = [(130), (1150)]
@@ -34,8 +34,10 @@ bullet = None
 
 def enter():
     global isaac, background, is_key_pressed, is_attack_key_pressing, bullet_dir, gushers, is_bullet_create
-    global BackGround_Width, BackGround_Height, invensibility_time, shot_term, bullets, door, indoor, monster_count
-    global  flies, big_flies, enemy_bullets, is_enemy_bullet_create
+    global BackGround_Width, BackGround_Height, invincibility_time, shot_term, bullets, door, indoor, monster_count
+    global  flies, big_flies, enemy_bullets, is_enemy_bullet_create, needles
+
+
     game_world.objects = [[],[]]
     BackGround_Width = 1280
     BackGround_Height = 960
@@ -48,6 +50,8 @@ def enter():
     isaac.now_health = main_state.hp
     monster_count = 2
     background = BackGround()
+    needles = [Needle(400,500),Needle(300, 700), Needle(600, 200), Needle(900, 700), Needle(750, 400)]
+
     door = Door()
     door.x = door_position[1]
     entrance_door = Door()
@@ -59,6 +63,8 @@ def enter():
     flies = [Fly() for i in range(monster_count-1)]
     big_flies = [BigFly() for i in range(monster_count-1)]
     game_world.add_object(background,0)
+    game_world.add_objects(needles, 0)
+
     game_world.add_object(indoor, 1)
     game_world.add_object(door, 1)
     game_world.add_object(isaac, 1)
@@ -71,7 +77,7 @@ def enter():
     bullet_dir = 0
     is_bullet_create = False
     is_enemy_bullet_create = False
-    invensibility_time = 0
+    invincibility_time = 0
     shot_term = 0
 
     bullets = []
@@ -117,6 +123,8 @@ def handle_events():
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
                 game_framework.push_state(pause_state)
+            elif event.key == SDLK_1:
+                game_framework.change_state(main_state_3)
             elif event.key == SDLK_d:
                 isaac.body_is_move = True
                 isaac.velocity_x += isaac.velocity
@@ -195,8 +203,9 @@ def get_isaac():
 
 
 def update():
-    global is_attack_key_pressing, bullet_dir, gushers, bullet, is_bullet_create, invensibility_time, shot_term
+    global is_attack_key_pressing, bullet_dir, gushers, bullet, is_bullet_create, invincibility_time, shot_term
     global flies, monster_count, indoor, big_flies, enemy_bullets,bullets, is_enemy_bullet_create, enemy_big_fly_shot_term
+    global  needles
     for game_object in game_world.all_objects():
         game_object.update()
 
@@ -243,15 +252,19 @@ def update():
                     fly.health -= bullet.damage
                     print(fly.health)
 
-    if invensibility_time == 0:
+    if invincibility_time == 0:
         for fly in flies:
             if collide(isaac, fly):
                 isaac.now_health -= 0.5
-                invensibility_time = 10
+                invincibility_time = 10
         for big_fly in big_flies:
             if collide(isaac, big_fly):
                 isaac.now_health -= 0.5
-                invensibility_time = 10
+                invincibility_time = 10
+        for needle in needles:
+            if collide(isaac, needle):
+                isaac.now_health -= needle.damage
+                invincibility_time = 10
 
     for big_fly in big_flies:
         for bullet in bullets:
@@ -272,14 +285,14 @@ def update():
             game_world.remove_object(enemy_bullet)
             enemy_bullets.remove(enemy_bullet)
             isaac.now_health -= enemy_bullet.damage
-            invensibility_time = 10
+            invincibility_time = 10
 
 
 
-    if invensibility_time == 0:
-            invensibility_time = 10
-    if invensibility_time > 0:
-        invensibility_time -= 1
+    if invincibility_time == 0:
+            invincibility_time = 10
+    if invincibility_time > 0:
+        invincibility_time -= 1
     if shot_term >= 0:
         shot_term -= 1
 

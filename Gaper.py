@@ -24,7 +24,7 @@ class Gaper:
 
     def __init__(self):
         if Gaper.image == None:
-            Gaper.image = load_image('resorce/Gaper.png')
+            Gaper.image = load_image('resource/Gaper.png')
         self.x = random.randint(200, 1000)
         self.y = random.randint(200, 750)
         self.velocity = RUN_SPEED_PPS
@@ -77,7 +77,7 @@ class Gaper:
 
     def update(self):
         if self.is_shot:
-            self.image = load_image('resorce/Gaper.png')
+            self.image = load_image('resource/Gaper.png')
             self.frame = (self.frame + FRAMES_PER_ACTION_IDLE * ACTION_PER_TIME * game_framework.frame_time) % 2
             self.shot_term -= 1
         self.bt.run()

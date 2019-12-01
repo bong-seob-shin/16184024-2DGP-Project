@@ -17,7 +17,7 @@ class Bullet:
 
     def __init__(self, x = 400, y= 300, b_dir =0):
         if Bullet.image == None:
-            Bullet.image = load_image('resorce/bullet.png')
+            Bullet.image = load_image('resource/bullet.png')
         self.x, self.y, self.b_dir = x, y, b_dir
         self.right_x, self.left_x, self.up_y, self.down_y = x+40, x-40, y+40, y-40
         self.velocity = RUN_SPEED_PPS

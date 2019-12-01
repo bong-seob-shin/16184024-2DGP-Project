@@ -11,14 +11,13 @@ from Bullet import Bullet
 from BackGround import BackGround
 from Door import Door, InDoor
 from Isaac import Isaac
-from Fly import Fly
 from EnemyBullet_BigFly import EnemyBulletBigFly
-import main_state_2
+import main_state_3
 from Gaper import  Gaper
-from Mulligan import Mulligan
+from Maggot import Maggot
 from Health import Health
-import main_state_4
 import death_state
+
 BackGround_Width = 1280
 BackGround_Height = 960
 door_position = [(130), (1150)]
@@ -35,7 +34,7 @@ bullet = None
 def enter():
     global isaac, background, is_key_pressed, is_attack_key_pressing, bullet_dir, gushers, is_bullet_create
     global BackGround_Width, BackGround_Height, invincibility_time, shot_term, bullets, door, indoor, monster_count
-    global  flies, enemy_bullets, is_enemy_bullet_create,gapers , mulligans
+    global  flies, enemy_bullets, is_enemy_bullet_create,gapers , mulligans, maggotes
     game_world.objects = [[], []]
     BackGround_Width = 1280
     BackGround_Height = 960
@@ -43,10 +42,10 @@ def enter():
     isaac.x = 200
     isaac.y = BackGround_Height//2
     isaac.body_x, isaac.body_y = isaac.x - 5, isaac.y - 50
-    isaac.velocity_x = main_state_2.isaac.velocity_x
-    isaac.velocity_y = main_state_2.isaac.velocity_y
-    isaac.now_health = main_state_2.hp
-    monster_count = 10
+    isaac.velocity_x = main_state_3.isaac.velocity_x
+    isaac.velocity_y = main_state_3.isaac.velocity_y
+    isaac.now_health = main_state_3.hp
+    monster_count = 7
     background = BackGround()
     door = Door()
     door.x = door_position[1]
@@ -56,10 +55,8 @@ def enter():
     indoor.x = door_position[1]
     entrance_indoor = InDoor()
     entrance_indoor.x = door_position[0]
-    flies = [Fly() for i in range(2)]
-    gapers = [Gaper() for i in range(5)]
-    mulligans = [Mulligan() for i in range (3)]
-
+    gapers = [Gaper() for i in range(4)]
+    maggotes = [Maggot() for i in range (3)]
 
     game_world.add_object(background,0)
     game_world.add_object(indoor, 1)
@@ -67,9 +64,8 @@ def enter():
     game_world.add_object(isaac, 1)
     game_world.add_object(entrance_door, 1)
     game_world.add_object(entrance_indoor, 1)
-    game_world.add_objects(flies, 1)
+    game_world.add_objects(maggotes,1)
     game_world.add_objects(gapers, 1)
-    game_world.add_objects(mulligans ,1)
     is_key_pressed = 0
     is_attack_key_pressing = 0
     bullet_dir = 0
@@ -84,8 +80,7 @@ def enter():
 
 
 def exit():
-    global hp
-    hp = isaac.now_health
+
     pass
 
 
@@ -121,8 +116,6 @@ def handle_events():
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
                 game_framework.push_state(pause_state)
-            elif event.key == SDLK_1:
-                game_framework.change_state(main_state_4)
             elif event.key == SDLK_d:
                 isaac.body_is_move = True
                 isaac.velocity_x += isaac.velocity
@@ -202,7 +195,7 @@ def get_isaac():
 def update():
     global is_attack_key_pressing, bullet_dir, gushers, bullet, is_bullet_create, invincibility_time, shot_term
     global flies, monster_count, indoor, enemy_bullets,bullets, is_enemy_bullet_create, mulligans
-    global gapers
+    global gapers,maggotes
     for game_object in game_world.all_objects():
         game_object.update()
 
@@ -235,43 +228,28 @@ def update():
                 is_enemy_bullet_create = True
                 gaper.shot_term = 70
 
-    for fly in flies:
+    for maggot in maggotes:
         for bullet in bullets:
-            if collide(fly, bullet):
+            if collide(maggot, bullet):
                 game_world.remove_object(bullet)
                 bullets.remove(bullet)
-                if fly.health < 1:
-                    flies.remove(fly)
-                    game_world.remove_object(fly)
+                if maggot.health < 1:
+                    maggotes.remove(maggot)
+                    game_world.remove_object(maggot)
                     if monster_count > 0:
                         monster_count -= 1
-                if fly.health > 0:
-                    fly.health -= bullet.damage
-                    print(fly.health)
+                if maggot.health > 0:
+                    maggot.health -= bullet.damage
+                    print(maggot.health)
 
-    for mulligan in mulligans:
-        for bullet in bullets:
-            if collide(mulligan, bullet):
-                game_world.remove_object(bullet)
-                bullets.remove(bullet)
-                if mulligan.health < 1:
-                    mulligans.remove(mulligan)
-                    game_world.remove_object(mulligan)
-                    if monster_count > 0:
-                        monster_count -= 1
-                if mulligan.health > 0:
-                    mulligan.health -= bullet.damage
-                    print(mulligan.health)
+
 
     if invincibility_time == 0:
-        for fly in flies:
-            if collide(isaac, fly):
+        for maggot in maggotes:
+            if collide(isaac, maggot):
                 isaac.now_health -= 0.5
                 invincibility_time = 10
-        for mulligan in mulligans:
-            if collide(isaac, mulligan):
-                isaac.now_health -= 0.5
-                invincibility_time = 10
+
         for gaper in gapers:
             if collide(isaac, gaper):
                 isaac.now_health -= 0.5
@@ -291,8 +269,11 @@ def update():
                     gaper.health -= bullet.damage
                     print(gaper.health)
 
+
+
+
     if invincibility_time == 0:
-        invincibility_time = 10
+            invincibility_time = 10
     if invincibility_time > 0:
         invincibility_time -= 1
     if shot_term >= 0:
@@ -301,16 +282,16 @@ def update():
     if monster_count == 0:
         indoor.open_door = True
 
-    if collide(isaac, indoor):
-        if indoor.open_door:
-            for game_object in game_world.all_objects():
-                 game_world.remove_object(game_object)
-            game_framework.change_state(main_state_4)
+    # if collide(isaac, indoor):
+    #     if indoor.open_door:
+    #         for game_object in game_world.all_objects():
+    #              game_world.remove_object(game_object)
+    #         game_framework.change_state(main_state_3)
 
     pass
+
     if isaac.is_death:
         game_framework.change_state(death_state)
-
 def draw():
     clear_canvas()
     for game_object in game_world.all_objects():

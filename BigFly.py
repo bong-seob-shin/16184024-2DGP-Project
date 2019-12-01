@@ -24,7 +24,7 @@ class BigFly:
 
     def __init__(self):
         if BigFly.image == None:
-            BigFly.image = load_image('resorce/BigFly.png')
+            BigFly.image = load_image('resource/BigFly.png')
         self.x = random.randint(200, 1000)
         self.y = random.randint(200, 750)
         self.velocity = RUN_SPEED_PPS
@@ -83,11 +83,11 @@ class BigFly:
 
     def update(self):
         if self.is_shot:
-            self.image = load_image('resorce/BigFly_Attack.png')
+            self.image = load_image('resource/BigFly_Attack.png')
             self.frame = (self.frame + FRAMES_PER_ACTION_IDLE * ACTION_PER_TIME * game_framework.frame_time) % 16
             self.shot_term -= 1
         else:
-            self.image = load_image('resorce/BigFly.png')
+            self.image = load_image('resource/BigFly.png')
             self.frame = (self.frame + FRAMES_PER_ACTION_IDLE * ACTION_PER_TIME * game_framework.frame_time) % 2
         self.bt.run()
 

@@ -24,14 +24,14 @@ class Isaac:
     def __init__(self):
         self.x, self.y = BackGround_Width//2, BackGround_Height//2
         self.frame = 0
-        self.image = load_image('resorce/isaac_head.png')
+        self.image = load_image('resource/isaac_head.png')
         self.velocity_x = 0
         self.velocity_y = 0
         self.velocity = RUN_SPEED_PPS
         self.left = 0
         self.body_x, self.body_y = self.x-5, self.y-50
         self.body_frame = 0
-        self.body_image = load_image('resorce/isaac_body.png')
+        self.body_image = load_image('resource/isaac_body.png')
         self.body_is_move = False
         self.body_bottom = 90
         self.start_health = 3
@@ -82,7 +82,7 @@ class Isaac:
         if self.now_health <=0:
             self.is_death = True
         if self.is_death:
-            self.image = load_image('resorce/isaac_death.png')
+            self.image = load_image('resource/isaac_death.png')
     def draw(self):
         if self.is_death:
             self.image.draw(self.x,self.y, 150, 60)

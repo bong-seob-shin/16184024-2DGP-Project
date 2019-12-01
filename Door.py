@@ -3,7 +3,7 @@ import main_state
 
 class Door:
     def __init__(self):
-        self.image = load_image('resorce/door.png')
+        self.image = load_image('resource/door.png')
         self.x = 0
         self.y = main_state.BackGround_Height//2
     def update(self):
@@ -19,13 +19,13 @@ class Door:
 
 class InDoor():
     def __init__(self):
-        self.image = load_image('resorce/close_door.png')
+        self.image = load_image('resource/close_door.png')
         self.x = 0
         self.y = main_state.BackGround_Height//2
         self.open_door = False
     def update(self):
         if self.open_door:
-            self.image = load_image('resorce/open_door.png')
+            self.image = load_image('resource/open_door.png')
         pass
 
     def draw(self):

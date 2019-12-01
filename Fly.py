@@ -23,7 +23,7 @@ class Fly:
 
     def __init__(self):
         if Fly.image == None:
-            Fly.image = load_image('resorce/Fly.png')
+            Fly.image = load_image('resource/Fly.png')
         self.x = random.randint(200, 1000)
         self.y = random.randint(200, 750)
         self.velocity = RUN_SPEED_PPS

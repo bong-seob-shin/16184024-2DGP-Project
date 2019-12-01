@@ -11,15 +11,16 @@ from Bullet import Bullet
 from BackGround import BackGround
 from Door import  Door, InDoor
 from Isaac import Isaac
+from Rock import  Rock
 import main_state_2
 import death_state
+
 from Health import Health
 
 
 BackGround_Width = 1280
 BackGround_Height = 960
 door_position = [(130), (1150)]
-
 name = "MainState"
 
 character_head = None
@@ -33,7 +34,8 @@ bullet = None
 
 def enter():
     global isaac, background, is_key_pressed , is_attack_key_pressing, bullet_dir, gushers, is_bullet_create
-    global BackGround_Width, BackGround_Height, invensibility_time, shot_term, bullets, door, indoor, monster_count
+    global BackGround_Width, BackGround_Height, invincibility_time, shot_term, bullets, door, indoor, monster_count
+    global rocks
     game_world.objects = [[], []]
     BackGround_Width = 1280
     BackGround_Height = 960
@@ -45,7 +47,9 @@ def enter():
     door.x = door_position[1]
     indoor = InDoor()
     indoor.x = door_position[1]
+    rocks = [Rock(900, 400), Rock(900, 600), Rock(400, 400), Rock(400, 600)]
     game_world.add_object(background, 0)
+    game_world.add_objects(rocks,0)
     game_world.add_object(indoor,1)
     game_world.add_object(door,1)
     game_world.add_object(isaac, 1)
@@ -54,7 +58,7 @@ def enter():
     is_attack_key_pressing = 0
     bullet_dir = 0
     is_bullet_create = False
-    invensibility_time = 0
+    invincibility_time = 0
     shot_term = 0
     bullets = []
 
@@ -97,6 +101,8 @@ def handle_events():
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
                 game_framework.push_state(pause_state)
+            elif event.key == SDLK_1:
+                game_framework.change_state(main_state_2)
             elif event.key == SDLK_d:
                 isaac.body_is_move = True
                 isaac.velocity_x += isaac.velocity
@@ -171,8 +177,8 @@ def handle_events():
 
 
 def update():
-    global is_attack_key_pressing, bullet_dir, gushers, bullet, is_bullet_create,invensibility_time, shot_term, bullets
-    global  gusher, monster_count, indoor
+    global is_attack_key_pressing, bullet_dir, gushers, bullet, is_bullet_create,invincibility_time, shot_term, bullets
+    global  gusher, monster_count, indoor, rocks
     for game_object in game_world.all_objects():
         game_object.update()
 
@@ -206,18 +212,30 @@ def update():
                     gusher.health -= bullet.damage
                     print(gusher.health)
 
-    if invensibility_time == 0:
+    for rock in rocks:
+        for bullet in bullets:
+            if collide(rock, bullet):
+                game_world.remove_object(bullet)
+                bullets.remove(bullet)
+
+    if invincibility_time == 0:
         for gusher in gushers:
             if collide(isaac, gusher):
                 isaac.now_health -= 0.5
-                invensibility_time = 10
-    if invensibility_time >0:
-        invensibility_time -= 1
+                invincibility_time = 10
+    if invincibility_time >0:
+        invincibility_time -= 1
     if shot_term >=0:
         shot_term -= 1
 
     if monster_count == 0:
         indoor.open_door = True
+
+
+
+
+
+
 
     if collide(isaac, indoor):
         if indoor.open_door :

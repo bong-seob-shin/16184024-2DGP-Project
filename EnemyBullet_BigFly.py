@@ -19,7 +19,7 @@ class EnemyBulletBigFly:
 
     def __init__(self, x = 400, y= 300, dir =0):
         if EnemyBulletBigFly.image == None:
-            EnemyBulletBigFly.image = load_image('resorce/enemy_nomal_bullet.png')
+            EnemyBulletBigFly.image = load_image('resource/enemy_nomal_bullet.png')
         self.x, self.y, self.dir = x, y, dir
         self.velocity = RUN_SPEED_PPS
         self.start_x = self.x

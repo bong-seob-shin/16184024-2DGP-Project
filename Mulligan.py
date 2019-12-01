@@ -23,7 +23,7 @@ class Mulligan:
 
     def __init__(self):
         if Mulligan.image == None:
-            Mulligan.image = load_image('resorce/mulligan.png')
+            Mulligan.image = load_image('resource/mulligan.png')
         self.x = random.randint(200, 1000)
         self.y = random.randint(200, 750)
         self.speed = RUN_SPEED_PPS

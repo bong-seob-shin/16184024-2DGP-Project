@@ -10,7 +10,7 @@ BackGround_Height = 960
 
 def enter():
     global image
-    image = load_image('resorce/start_state.png')
+    image = load_image('resource/start_state.png')
     pass
 
 
