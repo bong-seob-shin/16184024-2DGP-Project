@@ -9,14 +9,14 @@ BackGround_Width = 1280
 BackGround_Height = 960
 
 PIXEL_PER_METER = (10.0 / 0.3)
-RUN_SPEED_KMPH = 2.0
+RUN_SPEED_KMPH = 3.0
 RUN_SPEED_MPM = (RUN_SPEED_KMPH* 1000.0/ 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM/ 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS*PIXEL_PER_METER)
 
 TIME_PER_ACTION = 2
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
-FRAMES_PER_ACTION_IDLE = 4
+FRAMES_PER_ACTION_IDLE = 5
 FRAMES_PER_ACTION_RUSH = 1
 
 class Maggot:
@@ -30,7 +30,7 @@ class Maggot:
         self.velocity = RUN_SPEED_PPS
         self.dir = random.randint(0,3)
         self.timer = 5
-        self.health = 5
+        self.health = 4
         self.frame = 0
         self.bottom = 0
         self.build_behavior_tree()
@@ -44,23 +44,11 @@ class Maggot:
         return self.x - 10, self.y - 10, self.x + 10, self.y +10
 
     def calculate_current_position(self):
-
-        if self.dir == 0:
-            self.y += self.speed * game_framework.frame_time
-            if self.y == clamp(150, self.y, 960 - 250):
-                self.is_rush = False
-        elif self.dir == 1:
-            self.y -= self.speed * game_framework.frame_time
-            if self.y == clamp(150, self.y, 960 - 250):
-                self.is_rush =False
-        elif self.dir == 2 :
-            self.x += self.speed * game_framework.frame_time
-            if self.x == clamp(150, self.x, 1280 - 250):
-                self.is_rush = False
-        elif self.dir == 3 :
-            self.x -= self.speed * game_framework.frame_time
-            if self.x == clamp(150, self.x, 1280 - 250):
-                self.is_rush = False
+        self.frame = (self.frame + FRAMES_PER_ACTION_IDLE * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION_IDLE
+        self.x += self.speed * math.cos(self.dir) * game_framework.frame_time
+        self.y += self.speed * math.sin(self.dir) * game_framework.frame_time
+        self.x = clamp(150, self.x, 1280 - 250)
+        self.y = clamp(150, self.y, 960 - 250)
 
     def wander(self):
         self.is_rush = False
@@ -69,14 +57,15 @@ class Maggot:
         self.timer -= game_framework.frame_time
         if self.timer < 0:
             self.timer += 1.0
-            self.dir = random.randint(0,3)
-            if self.dir == 0:#하
+            self.dir = random.random() * 2 * math.pi
+
+            if math.sin(self.dir)<=0:#하
                 self.bottom = 0
-            elif self.dir == 1:#상
+            elif math.sin(self.dir)>0:#상
                 self.bottom = 60
-            elif self.dir == 2:#좌
+            elif math.cos(self.dir) <0:#좌
                 self.bottom = 120
-            elif self.dir == 3:#우
+            elif math.cos(self.dir)>=0:#우
                 self.bottom = 180
             return BehaviorTree.SUCCESS
         pass
@@ -94,41 +83,30 @@ class Maggot:
         pass
 
     def update(self):
-        if self.is_rush:
-            self.frame = 4
-        else:
-            self.frame = (self.frame + FRAMES_PER_ACTION_IDLE * ACTION_PER_TIME * game_framework.frame_time) % 4
+
+        self.frame = (self.frame + FRAMES_PER_ACTION_IDLE * ACTION_PER_TIME * game_framework.frame_time) % 5
         self.bt.run()
 
     def find_player(self):
+        self.is_rush = True
         isaac = main_state_4.get_isaac()
-        if isaac.x == self.x:
-            if isaac.y <= self.y:
-                self.dir = 0
-                self.is_rush = True
-                return BehaviorTree.SUCCESS
-            elif isaac.y > self.y:
-                self.dir = 1
-                self.is_rush = True
-                return BehaviorTree.SUCCESS
-        elif isaac.y == self.y:
-            if isaac.x <= self.x:
-                self.dir =2
-                self.is_rush = True
-                return BehaviorTree.SUCCESS
-            elif isaac.x > self.y:
-                self.dir =3
-                self.is_rush = True
-                return BehaviorTree.SUCCESS
+        distance = (isaac.x - self.x) ** 2 + (isaac.y - self.y) ** 2
+        if distance < (PIXEL_PER_METER * 10) ** 2:
+            self.dir = math.atan2(isaac.y - self.y, isaac.x - self.x)
+            if self.dir < 0:  # 좌
+                self.bottom = 130
+            elif self.dir >= 0:  # 우
+                self.bottom = 190
+            return BehaviorTree.SUCCESS
         else:
             return BehaviorTree.FAIL
         pass
 
     def move_to_player(self):
-        while(self.is_rush):
-            self.speed = RUN_SPEED_PPS
-            self.calculate_current_position()
+        self.speed = RUN_SPEED_PPS
+        self.calculate_current_position()
         return BehaviorTree.SUCCESS
+
         pass
 
 

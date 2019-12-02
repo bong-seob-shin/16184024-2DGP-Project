@@ -67,6 +67,7 @@ def enter():
 def exit():
     global hp
     hp = isaac.now_health
+
     pass
 
 
@@ -178,14 +179,12 @@ def handle_events():
 
 def update():
     global is_attack_key_pressing, bullet_dir, gushers, bullet, is_bullet_create,invincibility_time, shot_term, bullets
-    global  gusher, monster_count, indoor, rocks
+    global  gusher, monster_count, indoor, rocks, is_key_pressed
     for game_object in game_world.all_objects():
         game_object.update()
 
     if is_attack_key_pressing >= 1:
         if shot_term < 0:
-
-
             if not is_bullet_create:
                 bullet = Bullet(isaac.x, isaac.y, bullet_dir)
                 game_world.add_object(bullet, 1)
@@ -195,7 +194,7 @@ def update():
                 game_world.add_object(bullet, 1)
                 bullets.append(bullet)
 
-            shot_term = 3
+            shot_term = 30
             is_bullet_create = True
 
     for gusher in gushers:
@@ -217,12 +216,36 @@ def update():
             if collide(rock, bullet):
                 game_world.remove_object(bullet)
                 bullets.remove(bullet)
+        if collide(isaac, rock):
+            if rock.x >= isaac.x :
+                isaac.x -= isaac.velocity_x
+                isaac.body_x -= isaac.velocity_x
+            if rock.x <= isaac.x:
+                isaac.x -= isaac.velocity_x
+                isaac.body_x -= isaac.velocity_x
+            if rock.y >= isaac.y:
+                isaac.y -=isaac.velocity_y
+                isaac.body_y -= isaac.velocity_y
+            if rock.y <= isaac.y:
+                isaac.y -=isaac.velocity_y
+                isaac.body_y -=isaac.velocity_y
+        for gusher in gushers:
+           if collide(gusher, rock):
+                if rock.x >= gusher.x :
+                    gusher.x -= 10
+                if rock.x <= gusher.x:
+                    gusher.x += 10
+                if rock.y >= gusher.y:
+                    gusher.y -= 10
+                if rock.y <= gusher.y:
+                    gusher.y += 10
+
 
     if invincibility_time == 0:
         for gusher in gushers:
             if collide(isaac, gusher):
                 isaac.now_health -= 0.5
-                invincibility_time = 10
+                invincibility_time = 100
     if invincibility_time >0:
         invincibility_time -= 1
     if shot_term >=0:
@@ -251,7 +274,6 @@ def draw():
     clear_canvas()
     for game_object in game_world.all_objects():
         game_object.draw()
-    delay(0.15)
     update_canvas()
     pass
 

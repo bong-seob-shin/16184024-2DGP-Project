@@ -8,14 +8,14 @@ BackGround_Width = 1280
 BackGround_Height = 960
 
 
-PIXEL_PER_METER = (10.0 / 0.3)
-RUN_SPEED_KMPH = 3.0
+PIXEL_PER_METER = (10.0 / 1.5)
+RUN_SPEED_KMPH = 1.0
 RUN_SPEED_MPM = (RUN_SPEED_KMPH* 1000.0/ 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM/ 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS*PIXEL_PER_METER)
 
 TIME_PER_ACTION = 0.5
-ACTION_PER_TIME = 4.0 / TIME_PER_ACTION
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 BODYFRAME_PER_ACTION = 8
 HEADFRAME_PER_ACTION = 2
 
@@ -92,10 +92,13 @@ class Isaac:
         for Health in self.heartArray:
             Health.draw()
         draw_rectangle(*self.get_bb())
-
+        draw_rectangle(*self.body_get_bb())
 
     def get_bb(self):
         return self.x - 40, self.y -70, self.x + 40, self.y +40
+
+    def body_get_bb(self):
+        return self.body_x-30, self.body_y-20, self.body_x+30, self.body_y+20
 
     pass
 

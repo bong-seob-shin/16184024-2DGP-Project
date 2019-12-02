@@ -25,13 +25,12 @@ class Needle:
 
     def change_needle_state(self):
 
-        if not self.needle_up:
-            self.needle_up = True
         if self.needle_up:
             self.needle_up = False
-
+        else:
+            self.needle_up =True
 
     def get_bb(self):
-        return self.x - 40, self.y - 40, self.x + 40, self.y + 40
+        return self.x - 30, self.y - 30, self.x + 30, self.y + 30
 
 

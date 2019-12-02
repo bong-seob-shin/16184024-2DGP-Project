@@ -1,8 +1,8 @@
 from pico2d import *
 import game_world
 
-PIXEL_PER_METER = (10.0 / 0.3)
-RUN_SPEED_KMPH = 4.0
+PIXEL_PER_METER = (10.0 / 0.4)
+RUN_SPEED_KMPH = 0.5
 RUN_SPEED_MPM = (RUN_SPEED_KMPH* 1000.0/ 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM/ 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS*PIXEL_PER_METER)
@@ -23,7 +23,7 @@ class Bullet:
         self.velocity = RUN_SPEED_PPS
         self.start_x = self.x
         self.start_y = self.y
-        self.damage = 10
+        self.damage = 1
     def draw(self):
 
         if self.b_dir == 0: #오른쪽
@@ -38,17 +38,17 @@ class Bullet:
     def update(self):
 
         if self.b_dir == 0: #오른쪽
-            if self.x > self.start_x+300:
-                self.y -= 10
+            if self.x > self.start_x+380:
+                self.y -= 1
                 if self.velocity> 10:
-                    self.velocity -= 8
+                    self.velocity -= 55
             self.x += self.velocity
 
         elif self.b_dir == 1: #왼쪽
-            if self.x < self.start_x-300:
-                self.y -= 10
+            if self.x < self.start_x-380:
+                self.y -= 1
                 if self.velocity > 10:
-                    self.velocity -= 8
+                    self.velocity -= 55
             self.x -= self.velocity
 
         elif self.b_dir == 2: #아래

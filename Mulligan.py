@@ -8,8 +8,8 @@ import main_state_3
 BackGround_Width = 1280
 BackGround_Height = 960
 
-PIXEL_PER_METER = (10.0 / 0.3)
-RUN_SPEED_KMPH = 3.0
+PIXEL_PER_METER = (10.0 / 0.1)
+RUN_SPEED_KMPH = 3.5
 RUN_SPEED_MPM = (RUN_SPEED_KMPH* 1000.0/ 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM/ 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS*PIXEL_PER_METER)
@@ -29,7 +29,7 @@ class Mulligan:
         self.speed = RUN_SPEED_PPS
         self.dir = random.randint(0,1)
         self.timer = 10
-        self.health = 10
+        self.health = 7
         self.frame = 0
         self.bottom = 0
         self.build_behavior_tree()

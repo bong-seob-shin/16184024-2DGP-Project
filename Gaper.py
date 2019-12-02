@@ -4,7 +4,6 @@ from BehaviorTree import SelectorNode, SequenceNode, Node, LeafNode, BehaviorTre
 import game_framework
 from Isaac import  Isaac
 import main_state_3
-
 BackGround_Width = 1280
 BackGround_Height = 960
 
@@ -30,7 +29,7 @@ class Gaper:
         self.velocity = RUN_SPEED_PPS
         self.dir = random.randint(0,1)
         self.timer = 5
-        self.health = 5
+        self.health = 3
         self.frame = 0
         self.bottom = 0
         self.build_behavior_tree()

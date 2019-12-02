@@ -29,7 +29,7 @@ class Fly:
         self.velocity = RUN_SPEED_PPS
         self.dir = random.randint(0,1)
         self.timer = 10
-        self.health = 5
+        self.health = 2
         self.frame = 0
         self.bottom = 0
         self.build_behavior_tree()

@@ -14,11 +14,13 @@ from Door import Door, InDoor
 from Isaac import Isaac
 from Fly import Fly
 from BigFly import BigFly
-from EnemyBullet_BigFly import EnemyBulletBigFly
+from EnemyBullet import EnemyBulletBigFly
 import main_state_3
 import death_state
 from Health import Health
 from Needle import  Needle
+from Rock import  Rock
+
 BackGround_Width = 1280
 BackGround_Height = 960
 door_position = [(130), (1150)]
@@ -35,7 +37,7 @@ bullet = None
 def enter():
     global isaac, background, is_key_pressed, is_attack_key_pressing, bullet_dir, gushers, is_bullet_create
     global BackGround_Width, BackGround_Height, invincibility_time, shot_term, bullets, door, indoor, monster_count
-    global  flies, big_flies, enemy_bullets, is_enemy_bullet_create, needles
+    global  flies, big_flies, enemy_bullets, is_enemy_bullet_create, needles, rocks
 
 
     game_world.objects = [[],[]]
@@ -51,7 +53,7 @@ def enter():
     monster_count = 2
     background = BackGround()
     needles = [Needle(400,500),Needle(300, 700), Needle(600, 200), Needle(900, 700), Needle(750, 400)]
-
+    rocks = [Rock(850, 400), Rock(1000, 600), Rock(400, 300), Rock(600, 600)]
     door = Door()
     door.x = door_position[1]
     entrance_door = Door()
@@ -64,7 +66,7 @@ def enter():
     big_flies = [BigFly() for i in range(monster_count-1)]
     game_world.add_object(background,0)
     game_world.add_objects(needles, 0)
-
+    game_world.add_objects(rocks, 0)
     game_world.add_object(indoor, 1)
     game_world.add_object(door, 1)
     game_world.add_object(isaac, 1)
@@ -77,8 +79,8 @@ def enter():
     bullet_dir = 0
     is_bullet_create = False
     is_enemy_bullet_create = False
-    invincibility_time = 0
-    shot_term = 0
+    invincibility_time = 100
+    shot_term = 100
 
     bullets = []
     enemy_bullets = []
@@ -109,6 +111,15 @@ def collide(a, b):
     if bottom_a > top_b: return False
     return True
 
+def collide_ex(a,b):
+    left_a, bottom_a, right_a, top_a = a.body_get_bb()
+    left_b, bottom_b, right_b, top_b = b.get_bb()
+
+    if left_a > right_b: return False
+    if right_a < left_b: return False
+    if top_a < bottom_b: return False
+    if bottom_a > top_b: return False
+    return True
 
 def handle_events():
     global is_key_pressed
@@ -221,7 +232,7 @@ def update():
                 game_world.add_object(bullet, 1)
                 bullets.append(bullet)
 
-            shot_term = 3
+            shot_term = 30
             is_bullet_create = True
 
     for big_fly in big_flies:
@@ -236,7 +247,7 @@ def update():
                     game_world.add_object(enemy_bullet, 1)
                     enemy_bullets.append(enemy_bullet)
                 is_enemy_bullet_create = True
-                big_fly.shot_term = 70
+                big_fly.shot_term = 200
 
     for fly in flies:
         for bullet in bullets:
@@ -256,15 +267,15 @@ def update():
         for fly in flies:
             if collide(isaac, fly):
                 isaac.now_health -= 0.5
-                invincibility_time = 10
+                invincibility_time = 100
         for big_fly in big_flies:
             if collide(isaac, big_fly):
                 isaac.now_health -= 0.5
-                invincibility_time = 10
+                invincibility_time = 100
         for needle in needles:
-            if collide(isaac, needle):
+            if collide_ex(isaac, needle):
                 isaac.now_health -= needle.damage
-                invincibility_time = 10
+                invincibility_time = 100
 
     for big_fly in big_flies:
         for bullet in bullets:
@@ -285,12 +296,29 @@ def update():
             game_world.remove_object(enemy_bullet)
             enemy_bullets.remove(enemy_bullet)
             isaac.now_health -= enemy_bullet.damage
-            invincibility_time = 10
+            invincibility_time = 100
 
 
+    for rock in rocks:
+        for bullet in bullets:
+            if collide(rock, bullet):
+                game_world.remove_object(bullet)
+                bullets.remove(bullet)
+        if collide(isaac, rock):
+            if rock.x >= isaac.x :
+                isaac.x -= isaac.velocity_x
+                isaac.body_x -= isaac.velocity_x
+            if rock.x <= isaac.x:
+                isaac.x -= isaac.velocity_x
+                isaac.body_x -= isaac.velocity_x
+            if rock.y >= isaac.y:
+                isaac.y -=isaac.velocity_y
+                isaac.body_y -= isaac.velocity_y
+            if rock.y <= isaac.y:
+                isaac.y -=isaac.velocity_y
+                isaac.body_y -=isaac.velocity_y
 
-    if invincibility_time == 0:
-            invincibility_time = 10
+
     if invincibility_time > 0:
         invincibility_time -= 1
     if shot_term >= 0:
@@ -311,7 +339,6 @@ def draw():
     clear_canvas()
     for game_object in game_world.all_objects():
         game_object.draw()
-    delay(0.15)
     update_canvas()
     pass
 

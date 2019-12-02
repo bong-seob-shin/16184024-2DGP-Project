@@ -11,12 +11,13 @@ from Bullet import Bullet
 from BackGround import BackGround
 from Door import Door, InDoor
 from Isaac import Isaac
-from EnemyBullet_BigFly import EnemyBulletBigFly
+from EnemyBullet import EnemyBulletBigFly
 import main_state_3
-from Gaper import  Gaper
+from Gaper_stage_4 import  Gaper
 from Maggot import Maggot
 from Health import Health
 import death_state
+from Needle import  Needle
 
 BackGround_Width = 1280
 BackGround_Height = 960
@@ -34,7 +35,7 @@ bullet = None
 def enter():
     global isaac, background, is_key_pressed, is_attack_key_pressing, bullet_dir, gushers, is_bullet_create
     global BackGround_Width, BackGround_Height, invincibility_time, shot_term, bullets, door, indoor, monster_count
-    global  flies, enemy_bullets, is_enemy_bullet_create,gapers , mulligans, maggotes
+    global  flies, enemy_bullets, is_enemy_bullet_create,gapers , mulligans, maggotes, needles, needle_up_timer
     game_world.objects = [[], []]
     BackGround_Width = 1280
     BackGround_Height = 960
@@ -55,10 +56,15 @@ def enter():
     indoor.x = door_position[1]
     entrance_indoor = InDoor()
     entrance_indoor.x = door_position[0]
+    needles = [Needle(360, 210),Needle(360, 275),Needle(360, 340),Needle(360, 400),Needle(360, 460), Needle(360, 520), Needle(360, 580), Needle(360, 640), Needle(360, 700), Needle(360, 760),
+             Needle(560, 210),Needle(560, 275),Needle(560, 340),Needle(560, 400),Needle(560, 460), Needle(560, 520), Needle(560, 580), Needle(560, 640), Needle(560, 700), Needle(560, 760),
+               Needle(760, 210),Needle(760, 275),Needle(760, 340),Needle(760, 400),Needle(760, 460), Needle(760, 520), Needle(760, 580), Needle(760, 640), Needle(760, 700), Needle(760, 760),
+               Needle(960, 210),Needle(960, 275),Needle(960, 340),Needle(960, 400),Needle(960, 460), Needle(960, 520), Needle(960, 580), Needle(960, 640), Needle(960, 700), Needle(960, 760),]
     gapers = [Gaper() for i in range(4)]
     maggotes = [Maggot() for i in range (3)]
 
     game_world.add_object(background,0)
+    game_world.add_objects(needles, 0)
     game_world.add_object(indoor, 1)
     game_world.add_object(door, 1)
     game_world.add_object(isaac, 1)
@@ -71,8 +77,9 @@ def enter():
     bullet_dir = 0
     is_bullet_create = False
     is_enemy_bullet_create = False
-    invincibility_time = 0
+    invincibility_time = 100
     shot_term = 0
+    needle_up_timer= 200
 
     bullets = []
     enemy_bullets = []
@@ -101,7 +108,15 @@ def collide(a, b):
     if top_a < bottom_b: return False
     if bottom_a > top_b: return False
     return True
+def collide_ex(a,b):
+    left_a, bottom_a, right_a, top_a = a.body_get_bb()
+    left_b, bottom_b, right_b, top_b = b.get_bb()
 
+    if left_a > right_b: return False
+    if right_a < left_b: return False
+    if top_a < bottom_b: return False
+    if bottom_a > top_b: return False
+    return True
 
 def handle_events():
     global is_key_pressed
@@ -195,7 +210,7 @@ def get_isaac():
 def update():
     global is_attack_key_pressing, bullet_dir, gushers, bullet, is_bullet_create, invincibility_time, shot_term
     global flies, monster_count, indoor, enemy_bullets,bullets, is_enemy_bullet_create, mulligans
-    global gapers,maggotes
+    global gapers, maggotes, needles, needle_up_timer
     for game_object in game_world.all_objects():
         game_object.update()
 
@@ -211,22 +226,22 @@ def update():
                 game_world.add_object(bullet, 1)
                 bullets.append(bullet)
 
-            shot_term = 3
+            shot_term = 30
             is_bullet_create = True
 
     for gaper in gapers:
         if gaper.is_shot:
             if gaper.shot_term == 0:
                 if not is_enemy_bullet_create:
-                    enemy_bullet = EnemyBulletBigFly(gaper.x, gaper.y, gaper.dir)
+                    enemy_bullet = EnemyBulletBigFly(gaper.x, gaper.y, gaper.dir,3)
                     game_world.add_object(enemy_bullet, 1)
                     enemy_bullets = [enemy_bullet]
                 else:
-                    enemy_bullet = EnemyBulletBigFly(gaper.x, gaper.y, gaper.dir)
+                    enemy_bullet = EnemyBulletBigFly(gaper.x, gaper.y, gaper.dir,3)
                     game_world.add_object(enemy_bullet, 1)
                     enemy_bullets.append(enemy_bullet)
                 is_enemy_bullet_create = True
-                gaper.shot_term = 70
+                gaper.shot_term = 200
 
     for maggot in maggotes:
         for bullet in bullets:
@@ -243,17 +258,27 @@ def update():
                     print(maggot.health)
 
 
+    if needle_up_timer < 0:
+        needle_up_timer = 200
+        for needle in needles:
+            needle.change_needle_state()
 
     if invincibility_time == 0:
         for maggot in maggotes:
             if collide(isaac, maggot):
                 isaac.now_health -= 0.5
-                invincibility_time = 10
+                invincibility_time = 100
 
         for gaper in gapers:
             if collide(isaac, gaper):
                 isaac.now_health -= 0.5
-                invincibility_time = 10
+                invincibility_time = 100
+
+        for needle in needles:
+            if needle.needle_up:
+                if collide_ex(isaac, needle):
+                    isaac.now_health -= needle.damage
+                    invincibility_time = 100
 
     for gaper in gapers:
         for bullet in bullets:
@@ -272,15 +297,18 @@ def update():
 
 
 
-    if invincibility_time == 0:
-            invincibility_time = 10
+
     if invincibility_time > 0:
         invincibility_time -= 1
     if shot_term >= 0:
         shot_term -= 1
 
+    if needle_up_timer >= 0:
+        needle_up_timer -=1
+
     if monster_count == 0:
         indoor.open_door = True
+
 
     # if collide(isaac, indoor):
     #     if indoor.open_door:
@@ -296,7 +324,6 @@ def draw():
     clear_canvas()
     for game_object in game_world.all_objects():
         game_object.draw()
-    delay(0.15)
     update_canvas()
     pass
 

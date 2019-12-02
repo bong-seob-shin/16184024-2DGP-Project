@@ -17,14 +17,14 @@ class EnemyBulletBigFly:
 
     image = None
 
-    def __init__(self, x = 400, y= 300, dir =0):
+    def __init__(self, x = 400, y= 300, dir =0, speed = 1):
         if EnemyBulletBigFly.image == None:
             EnemyBulletBigFly.image = load_image('resource/enemy_nomal_bullet.png')
         self.x, self.y, self.dir = x, y, dir
         self.velocity = RUN_SPEED_PPS
         self.start_x = self.x
         self.start_y = self.y
-        self.speed = RUN_SPEED_PPS
+        self.speed = RUN_SPEED_PPS*speed
         self.damage = 1
     def draw(self):
 
