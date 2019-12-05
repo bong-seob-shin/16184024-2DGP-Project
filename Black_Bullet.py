@@ -11,19 +11,19 @@ TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 4.0 / TIME_PER_ACTION
 PER_ACTION = 8
 
-class Black:
+class BlackBullet:
 
     image = None
 
     def __init__(self, x = 400, y= 300, b_dir =0):
-        if Black.image == None:
-            Black.image = load_image('resource/bullet.png')
+        if BlackBullet.image == None:
+            BlackBullet.image = load_image('resource/Black_Bullet.png')
         self.x, self.y, self.b_dir = x, y, b_dir
         self.right_x, self.left_x, self.up_y, self.down_y = x+40, x-40, y+40, y-40
         self.velocity = RUN_SPEED_PPS
         self.start_x = self.x
         self.start_y = self.y
-        self.damage = 1
+        self.damage = 3
     def draw(self):
 
         if self.b_dir == 0: #오른쪽
@@ -73,13 +73,14 @@ class Black:
         self.down_y = self.y - 40
     def get_bb(self):
         if self.b_dir == 0:  # 오른쪽
-            return self.right_x - 10, self.y - 10, self.right_x + 10, self.y + 10
+            return self.right_x - 15, self.y - 15, self.right_x + 15, self.y + 15
         elif self.b_dir == 1:  # 왼쪽
-            return self.left_x - 10, self.y - 10, self.left_x + 10, self.y + 10
+            return self.left_x - 15, self.y - 15, self.left_x + 15, self.y + 15
         elif self.b_dir == 2:  # 아래
-            return self.x - 10, self.up_y - 10, self.x + 10, self.up_y + 10
+            return self.x - 15, self.up_y - 15, self.x + 15, self.up_y + 15
         elif self.b_dir == 3:  # 위
-            return self.x - 10, self.down_y - 10, self.x + 10, self.down_y + 10
+            return self.x - 15, self.down_y - 15, self.x + 15, self.down_y + 15
+
 
 
 

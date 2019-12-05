@@ -8,6 +8,7 @@ import game_framework
 import pause_state
 import main_state
 from Bullet import Bullet
+from Black_Bullet import BlackBullet
 from BackGround import BackGround
 from Door import Door, InDoor
 from Isaac import Isaac
@@ -37,7 +38,7 @@ def enter():
     global isaac, background, is_key_pressed, is_attack_key_pressing, bullet_dir, gushers, is_bullet_create
     global BackGround_Width, BackGround_Height, invincibility_time, shot_term, bullets, door, indoor, monster_count
     global  flies, enemy_bullets, is_enemy_bullet_create,gapers , mulligans, maggotes, needles, needle_up_timer
-    global is_item_create,  is_bullet_upgrade
+    global is_item_create,  is_bullet_upgrade, is_black_bullet_create
     game_world.objects = [[], []]
     BackGround_Width = 1280
     BackGround_Height = 960
@@ -82,6 +83,8 @@ def enter():
     is_bullet_create = False
     is_enemy_bullet_create = False
     is_item_create = False
+    is_bullet_upgrade = False
+    is_black_bullet_create = False
     invincibility_time = 100
     shot_term = 0
     needle_up_timer= 200
@@ -215,24 +218,40 @@ def get_isaac():
 def update():
     global is_attack_key_pressing, bullet_dir, gushers, bullet, is_bullet_create, invincibility_time, shot_term
     global flies, monster_count, indoor, enemy_bullets,bullets, is_enemy_bullet_create, mulligans
-    global gapers, maggotes, needles, needle_up_timer, recovery_hp, upgrade_bullet, is_item_create
+    global gapers, maggotes, needles, needle_up_timer, recovery_hp, upgrade_bullet, is_item_create,is_bullet_upgrade
+    global is_black_bullet_create
     for game_object in game_world.all_objects():
         game_object.update()
 
-    if is_attack_key_pressing >= 1:
-        if shot_term < 0:
+    if not is_bullet_upgrade:
+        if is_attack_key_pressing >= 1:
+            if shot_term < 0:
 
-            if not is_bullet_create:
-                bullet = Bullet(isaac.x, isaac.y, bullet_dir)
-                game_world.add_object(bullet, 1)
-                bullets = [bullet]
-            else:
-                bullet = Bullet(isaac.x, isaac.y, bullet_dir)
-                game_world.add_object(bullet, 1)
-                bullets.append(bullet)
+                if not is_bullet_create:
+                    bullet = Bullet(isaac.x, isaac.y, bullet_dir)
+                    game_world.add_object(bullet, 1)
+                    bullets = [bullet]
+                else:
+                    bullet = Bullet(isaac.x, isaac.y, bullet_dir)
+                    game_world.add_object(bullet, 1)
+                    bullets.append(bullet)
+                shot_term = 30
+                is_bullet_create = True
 
-            shot_term = 30
-            is_bullet_create = True
+    if  is_bullet_upgrade:
+        if is_attack_key_pressing >= 1:
+            if shot_term < 0:
+
+                if not is_black_bullet_create:
+                    bullet = BlackBullet(isaac.x, isaac.y, bullet_dir)
+                    game_world.add_object(bullet, 1)
+                    bullets = [bullet]
+                else:
+                    bullet = BlackBullet(isaac.x, isaac.y, bullet_dir)
+                    game_world.add_object(bullet, 1)
+                    bullets.append(bullet)
+                shot_term = 30
+                is_black_bullet_create = True
 
     for gaper in gapers:
         if gaper.is_shot:
