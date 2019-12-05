@@ -345,6 +345,12 @@ def update():
                 if rock.y <= mulligan.y:
                     mulligan.y += 10
 
+    for enemy_bullet in enemy_bullets:
+        if collide(isaac, enemy_bullet):
+            game_world.remove_object(enemy_bullet)
+            enemy_bullets.remove(enemy_bullet)
+            isaac.now_health -= enemy_bullet.damage
+            invincibility_time = 100
 
     if invincibility_time > 0:
         invincibility_time -= 1

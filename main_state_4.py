@@ -18,6 +18,7 @@ from Maggot import Maggot
 from Health import Health
 import death_state
 from Needle import  Needle
+from Item import RecoveryHp, UpgradeBullet
 
 BackGround_Width = 1280
 BackGround_Height = 960
@@ -36,6 +37,7 @@ def enter():
     global isaac, background, is_key_pressed, is_attack_key_pressing, bullet_dir, gushers, is_bullet_create
     global BackGround_Width, BackGround_Height, invincibility_time, shot_term, bullets, door, indoor, monster_count
     global  flies, enemy_bullets, is_enemy_bullet_create,gapers , mulligans, maggotes, needles, needle_up_timer
+    global is_item_create,  is_bullet_upgrade
     game_world.objects = [[], []]
     BackGround_Width = 1280
     BackGround_Height = 960
@@ -46,13 +48,14 @@ def enter():
     isaac.velocity_x = main_state_3.isaac.velocity_x
     isaac.velocity_y = main_state_3.isaac.velocity_y
     isaac.now_health = main_state_3.hp
-    monster_count = 7
+    monster_count = 2
     background = BackGround()
     door = Door()
     door.x = door_position[1]
     entrance_door = Door()
     entrance_door.x = door_position[0]
     indoor = InDoor()
+
     indoor.x = door_position[1]
     entrance_indoor = InDoor()
     entrance_indoor.x = door_position[0]
@@ -60,8 +63,8 @@ def enter():
              Needle(560, 210),Needle(560, 275),Needle(560, 340),Needle(560, 400),Needle(560, 460), Needle(560, 520), Needle(560, 580), Needle(560, 640), Needle(560, 700), Needle(560, 760),
                Needle(760, 210),Needle(760, 275),Needle(760, 340),Needle(760, 400),Needle(760, 460), Needle(760, 520), Needle(760, 580), Needle(760, 640), Needle(760, 700), Needle(760, 760),
                Needle(960, 210),Needle(960, 275),Needle(960, 340),Needle(960, 400),Needle(960, 460), Needle(960, 520), Needle(960, 580), Needle(960, 640), Needle(960, 700), Needle(960, 760),]
-    gapers = [Gaper() for i in range(4)]
-    maggotes = [Maggot() for i in range (3)]
+    gapers = [Gaper() for i in range(1)]
+    maggotes = [Maggot() for i in range (1)]
 
     game_world.add_object(background,0)
     game_world.add_objects(needles, 0)
@@ -72,11 +75,13 @@ def enter():
     game_world.add_object(entrance_indoor, 1)
     game_world.add_objects(maggotes,1)
     game_world.add_objects(gapers, 1)
+
     is_key_pressed = 0
     is_attack_key_pressing = 0
     bullet_dir = 0
     is_bullet_create = False
     is_enemy_bullet_create = False
+    is_item_create = False
     invincibility_time = 100
     shot_term = 0
     needle_up_timer= 200
@@ -210,7 +215,7 @@ def get_isaac():
 def update():
     global is_attack_key_pressing, bullet_dir, gushers, bullet, is_bullet_create, invincibility_time, shot_term
     global flies, monster_count, indoor, enemy_bullets,bullets, is_enemy_bullet_create, mulligans
-    global gapers, maggotes, needles, needle_up_timer
+    global gapers, maggotes, needles, needle_up_timer, recovery_hp, upgrade_bullet, is_item_create
     for game_object in game_world.all_objects():
         game_object.update()
 
@@ -306,8 +311,31 @@ def update():
     if needle_up_timer >= 0:
         needle_up_timer -=1
 
+    for enemy_bullet in enemy_bullets:
+        if collide(isaac, enemy_bullet):
+            game_world.remove_object(enemy_bullet)
+            enemy_bullets.remove(enemy_bullet)
+            isaac.now_health -= enemy_bullet.damage
+            invincibility_time = 100
+
     if monster_count == 0:
         indoor.open_door = True
+        if not is_item_create:
+            recovery_hp = RecoveryHp()
+            upgrade_bullet = UpgradeBullet()
+            game_world.add_object(upgrade_bullet, 1)
+            game_world.add_object(recovery_hp, 1)
+            is_item_create = True
+
+    if is_item_create:
+        if collide(isaac, recovery_hp):
+            game_world.remove_object(upgrade_bullet)
+            game_world.remove_object(recovery_hp)
+            isaac.now_health = 3
+        if collide(isaac, upgrade_bullet):
+            game_world.remove_object(upgrade_bullet)
+            game_world.remove_object(recovery_hp)
+            is_bullet_upgrade = True
 
 
     # if collide(isaac, indoor):

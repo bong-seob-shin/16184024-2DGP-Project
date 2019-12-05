@@ -79,6 +79,11 @@ class Isaac:
                     self.heartArray[self.health_index].heart_state = 2
                     self.heartArray[self.health_index-1].heart_state = 2
                     self.heartArray[self.health_index - 2].heart_state = (self.start_health - self.now_health) * 2 - 4
+        if self.now_health == self.start_health:
+            self.heartArray[self.health_index].heart_state = 0
+            self.heartArray[self.health_index-1].heart_state = 0
+            self.heartArray[self.health_index-2].heart_state = 0
+
         if self.now_health <=0:
             self.is_death = True
         if self.is_death:

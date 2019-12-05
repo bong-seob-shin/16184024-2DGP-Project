@@ -39,7 +39,7 @@ class Mulligan:
         draw_rectangle(*self.get_bb())
         self.image.clip_draw(int(self.frame) * 100, self.bottom, 80, 40, self.x, self.y)
     def get_bb(self):
-        return self.x - 40, self.y - 40, self.x + 40, self.y +40
+        return self.x - 40, self.y - 20, self.x + 40, self.y +20
 
     def calculate_current_position(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION

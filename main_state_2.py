@@ -50,6 +50,7 @@ def enter():
     isaac.velocity_x = main_state.isaac.velocity_x
     isaac.velocity_y = main_state.isaac.velocity_y
     isaac.now_health = main_state.hp
+    isaac.body_is_move = False
     monster_count = 2
     background = BackGround()
     needles = [Needle(400,500),Needle(300, 700), Needle(600, 200), Needle(900, 700), Needle(750, 400)]
