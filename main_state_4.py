@@ -96,6 +96,8 @@ def enter():
 
 
 def exit():
+    global hp
+    hp = isaac.now_health
 
     pass
 
@@ -140,6 +142,8 @@ def handle_events():
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
                 game_framework.push_state(pause_state)
+            elif event.key == SDLK_1:
+                game_framework.change_state(boss_intro_state)
             elif event.key == SDLK_d:
                 isaac.body_is_move = True
                 isaac.velocity_x += isaac.velocity
