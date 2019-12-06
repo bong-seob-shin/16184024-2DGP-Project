@@ -3,8 +3,11 @@ import main_state
 
 
 class Needle:
+    image = None
     def __init__(self,x , y):
-        self.image = load_image('resource/needle_down.png')
+
+        if Needle.image == None:
+            Needle.image = load_image('resource/needle_down.png')
         self.x = x
         self.y = y
         self.needle_up = True

@@ -32,7 +32,7 @@ character_body = None
 background = None
 font = None
 bullet = None
-
+Needle.image = None
 
 def enter():
     global isaac, background, is_key_pressed, is_attack_key_pressing, bullet_dir, gushers, is_bullet_create
