@@ -51,7 +51,7 @@ def enter():
     isaac.velocity_y = main_state.isaac.velocity_y
     isaac.now_health = main_state.hp
     isaac.body_is_move = False
-    monster_count = 2
+    monster_count = 12
     background = BackGround()
     needles = [Needle(400,500),Needle(300, 700), Needle(600, 200), Needle(900, 700), Needle(750, 400)]
     rocks = [Rock(850, 400), Rock(1000, 600), Rock(400, 300), Rock(600, 600)]
@@ -63,8 +63,8 @@ def enter():
     indoor.x = door_position[1]
     entrance_indoor = InDoor()
     entrance_indoor.x = door_position[0]
-    flies = [Fly() for i in range(monster_count-1)]
-    big_flies = [BigFly() for i in range(monster_count-1)]
+    flies = [Fly() for i in range(7)]
+    big_flies = [BigFly() for i in range(5)]
     game_world.add_object(background,0)
     game_world.add_objects(needles, 0)
     game_world.add_objects(rocks, 0)
@@ -277,6 +277,12 @@ def update():
             if collide_ex(isaac, needle):
                 isaac.now_health -= needle.damage
                 invincibility_time = 100
+        for enemy_bullet in enemy_bullets:
+            if collide(isaac, enemy_bullet):
+                game_world.remove_object(enemy_bullet)
+                enemy_bullets.remove(enemy_bullet)
+                isaac.now_health -= enemy_bullet.damage
+                invincibility_time = 100
 
     for big_fly in big_flies:
         for bullet in bullets:
@@ -292,12 +298,7 @@ def update():
                     big_fly.health -= bullet.damage
                     print(big_fly.health)
 
-    for enemy_bullet in enemy_bullets:
-        if collide(isaac, enemy_bullet):
-            game_world.remove_object(enemy_bullet)
-            enemy_bullets.remove(enemy_bullet)
-            isaac.now_health -= enemy_bullet.damage
-            invincibility_time = 100
+
 
 
     for rock in rocks:
@@ -318,7 +319,6 @@ def update():
             if rock.y <= isaac.y:
                 isaac.y -=isaac.velocity_y
                 isaac.body_y -=isaac.velocity_y
-
 
     if invincibility_time > 0:
         invincibility_time -= 1

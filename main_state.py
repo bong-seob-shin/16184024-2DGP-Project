@@ -40,7 +40,7 @@ def enter():
     BackGround_Width = 1280
     BackGround_Height = 960
     isaac = Isaac()
-    monster_count = 1
+    monster_count = 10
     gushers = [Gusher() for i in range (monster_count)]
     background = BackGround()
     door = Door()

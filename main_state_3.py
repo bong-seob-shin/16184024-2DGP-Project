@@ -48,7 +48,7 @@ def enter():
     isaac.velocity_x = main_state_2.isaac.velocity_x
     isaac.velocity_y = main_state_2.isaac.velocity_y
     isaac.now_health = main_state_2.hp
-    monster_count = 3
+    monster_count = 13
     background = BackGround()
     door = Door()
     needles = [Needle(400, 500), Needle(300, 700), Needle(680, 400), Needle(920, 700), Needle(770, 400)]
@@ -61,9 +61,9 @@ def enter():
     indoor.x = door_position[1]
     entrance_indoor = InDoor()
     entrance_indoor.x = door_position[0]
-    flies = [Fly() for i in range(1)]
-    gapers = [Gaper() for i in range(1)]
-    mulligans = [Mulligan() for i in range (1)]
+    flies = [Fly() for i in range(5)]
+    gapers = [Gaper() for i in range(5)]
+    mulligans = [Mulligan() for i in range (3)]
 
     game_world.add_object(background,0)
     game_world.add_objects(needles, 0)
@@ -300,7 +300,12 @@ def update():
                 if collide_ex(isaac, needle):
                     isaac.now_health -= needle.damage
                     invincibility_time = 100
-
+        for enemy_bullet in enemy_bullets:
+            if collide(isaac, enemy_bullet):
+                game_world.remove_object(enemy_bullet)
+                enemy_bullets.remove(enemy_bullet)
+                isaac.now_health -= enemy_bullet.damage
+                invincibility_time = 100
 
     for gaper in gapers:
         for bullet in bullets:
@@ -345,12 +350,7 @@ def update():
                 if rock.y <= mulligan.y:
                     mulligan.y += 10
 
-    for enemy_bullet in enemy_bullets:
-        if collide(isaac, enemy_bullet):
-            game_world.remove_object(enemy_bullet)
-            enemy_bullets.remove(enemy_bullet)
-            isaac.now_health -= enemy_bullet.damage
-            invincibility_time = 100
+
 
     if invincibility_time > 0:
         invincibility_time -= 1
