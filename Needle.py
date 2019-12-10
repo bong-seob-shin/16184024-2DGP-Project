@@ -24,7 +24,6 @@ class Needle:
             self.timer = 10
     def draw(self):
         self.image.draw(self.x, self.y)
-        draw_rectangle(*self.get_bb())
 
     def change_needle_state(self):
 

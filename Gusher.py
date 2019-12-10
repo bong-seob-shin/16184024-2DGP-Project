@@ -39,7 +39,6 @@ class Gusher:
         self.velocity = self.speed * math.cos(self.dir) * game_framework.frame_time
 
     def draw(self):
-        draw_rectangle(*self.get_bb())
         self.image.clip_draw(int(self.frame) * 83, self.bottom, 80, 60, self.x, self.y)
     def get_bb(self):
         return self.x - 30, self.y -30, self.x + 20, self.y +20

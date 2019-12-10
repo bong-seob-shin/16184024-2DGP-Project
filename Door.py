@@ -37,7 +37,6 @@ class InDoor():
             self.image.composite_draw(0, 'h', self.x, self.y)
         else:
             self.image.draw(self.x, self.y)
-        draw_rectangle(*self.get_bb())
 
     def get_bb(self):
         return self.x - 20, self.y - 40, self.x + 20, self.y + 40

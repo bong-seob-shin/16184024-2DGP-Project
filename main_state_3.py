@@ -247,7 +247,12 @@ def update():
                     game_world.add_object(enemy_bullet, 1)
                     enemy_bullets.append(enemy_bullet)
                 is_enemy_bullet_create = True
-                gaper.shot_term = 70
+                gaper.shot_term = 150
+
+    if is_enemy_bullet_create:
+        for enemy_bullet in enemy_bullets:
+            if enemy_bullet.is_delete:
+                enemy_bullets.remove(enemy_bullet)
 
     for fly in flies:
         for bullet in bullets:

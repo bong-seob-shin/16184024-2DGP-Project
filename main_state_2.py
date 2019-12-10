@@ -250,6 +250,11 @@ def update():
                 is_enemy_bullet_create = True
                 big_fly.shot_term = 200
 
+    if is_enemy_bullet_create:
+        for enemy_bullet in enemy_bullets:
+            if enemy_bullet.is_delete:
+                enemy_bullets.remove(enemy_bullet)
+
     for fly in flies:
         for bullet in bullets:
             if collide(fly, bullet):

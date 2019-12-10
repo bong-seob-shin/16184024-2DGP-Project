@@ -38,7 +38,6 @@ class Maggot:
         self.shot_term= 0
 
     def draw(self):
-        draw_rectangle(*self.get_bb())
         self.image.clip_draw(int(self.frame) * 60, self.bottom, 60, 60, self.x, self.y)
     def get_bb(self):
         return self.x - 10, self.y - 10, self.x + 10, self.y +10

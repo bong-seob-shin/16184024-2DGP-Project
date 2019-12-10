@@ -37,7 +37,6 @@ class Gaper:
         self.shot_term = 0
 
     def draw(self):
-        draw_rectangle(*self.get_bb())
         self.image.clip_draw(int(self.frame) * 85, self.bottom, 95, 90, self.x, self.y)
     def get_bb(self):
         return self.x - 40, self.y - 40, self.x + 40, self.y +40

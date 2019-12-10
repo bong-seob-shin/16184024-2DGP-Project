@@ -106,8 +106,6 @@ class Isaac:
             self.image.clip_draw(int(self.frame) * 80 + self.left, 0, 80, 80, self.x, self.y)
         for Health in self.heartArray:
             Health.draw()
-        draw_rectangle(*self.get_bb())
-        draw_rectangle(*self.body_get_bb())
 
     def get_bb(self):
         return self.x - 40, self.y -70, self.x + 40, self.y +40

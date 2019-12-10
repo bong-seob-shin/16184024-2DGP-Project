@@ -36,7 +36,6 @@ class Mulligan:
 
 
     def draw(self):
-        draw_rectangle(*self.get_bb())
         self.image.clip_draw(int(self.frame) * 100, self.bottom, 80, 40, self.x, self.y)
     def get_bb(self):
         return self.x - 40, self.y - 20, self.x + 40, self.y +20

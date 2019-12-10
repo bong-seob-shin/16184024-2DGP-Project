@@ -26,26 +26,29 @@ class EnemyBulletBigFly:
         self.start_y = self.y
         self.speed = RUN_SPEED_PPS*speed
         self.damage = 1
+        self.is_delete = False
     def draw(self):
 
 
         self.image.draw(self.x, self.y)
 
 
-        draw_rectangle(*self.get_bb())
     def update(self):
         self.x += self.speed * math.cos(self.dir) * game_framework.frame_time
         self.y += self.speed * math.sin(self.dir) * game_framework.frame_time
 
         if self.x < 175 or self.x > 1280 - 175:
             game_world.remove_object(self)
+            self.is_delete = True
         elif self.x > self.start_x+400 or self.x < self.start_x-400:
             game_world.remove_object(self)
-
+            self.is_delete = True
         if self.y < 155 or self.y > 960 - 150:
             game_world.remove_object(self)
+            self.is_delete = True
         elif self.y <self.start_y - 400 or self.y > self.start_y+400:
             game_world.remove_object(self)
+            self.is_delete = True
 
     def get_bb(self):
             return self.x - 10, self.y - 10, self.x + 10, self.y + 10

@@ -39,7 +39,6 @@ class Duke:
 
 
     def draw(self):
-        draw_rectangle(*self.get_bb())
         self.image.clip_draw(int(self.frame) * 200, self.bottom, 200, 200, self.x, self.y)
     def get_bb(self):
         return self.x - 80, self.y - 80, self.x + 80, self.y +80

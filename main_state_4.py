@@ -50,7 +50,7 @@ def enter():
     isaac.velocity_x = main_state_3.isaac.velocity_x
     isaac.velocity_y = main_state_3.isaac.velocity_y
     isaac.now_health = main_state_3.hp
-    monster_count = 0
+    monster_count = 10
     background = BackGround()
     door = Door()
     door.x = door_position[1]
@@ -65,8 +65,8 @@ def enter():
              Needle(560, 210),Needle(560, 275),Needle(560, 340),Needle(560, 400),Needle(560, 460), Needle(560, 520), Needle(560, 580), Needle(560, 640), Needle(560, 700), Needle(560, 760),
                Needle(760, 210),Needle(760, 275),Needle(760, 340),Needle(760, 400),Needle(760, 460), Needle(760, 520), Needle(760, 580), Needle(760, 640), Needle(760, 700), Needle(760, 760),
                Needle(960, 210),Needle(960, 275),Needle(960, 340),Needle(960, 400),Needle(960, 460), Needle(960, 520), Needle(960, 580), Needle(960, 640), Needle(960, 700), Needle(960, 760),]
-    gapers = [Gaper() for i in range(0)]
-    maggotes = [Maggot() for i in range (0)]
+    gapers = [Gaper() for i in range(5)]
+    maggotes = [Maggot() for i in range (5)]
 
     game_world.add_object(background,0)
     game_world.add_objects(needles, 0)
@@ -271,6 +271,11 @@ def update():
                     enemy_bullets.append(enemy_bullet)
                 is_enemy_bullet_create = True
                 gaper.shot_term = 200
+
+    if is_enemy_bullet_create:
+        for enemy_bullet in enemy_bullets:
+            if enemy_bullet.is_delete:
+                enemy_bullets.remove(enemy_bullet)
 
     for maggot in maggotes:
         for bullet in bullets:

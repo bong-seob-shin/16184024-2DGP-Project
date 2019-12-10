@@ -39,7 +39,6 @@ class BlackBullet:
             self.image.draw(self.x, self.up_y)
         elif self.b_dir == 3: #위
             self.image.draw(self.x, self.down_y)
-        draw_rectangle(*self.get_bb())
     def update(self):
 
         if self.b_dir == 0: #오른쪽
