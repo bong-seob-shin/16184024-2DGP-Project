@@ -18,6 +18,7 @@ class RecoveryHp:
         return self.x - 40, self.y - 40, self.x + 40, self.y + 40
 
 
+
 class UpgradeBullet:
     def __init__(self):
         self.image = load_image('resource/Upgrade_Bullet.png')

@@ -39,7 +39,7 @@ def enter():
     global isaac, background, is_key_pressed, is_attack_key_pressing, bullet_dir, gushers, is_bullet_create
     global BackGround_Width, BackGround_Height, invincibility_time, shot_term, bullets, door, indoor, monster_count
     global  flies, enemy_bullets, is_enemy_bullet_create,gapers , mulligans, maggotes, needles, needle_up_timer
-    global is_item_create,  is_bullet_upgrade, is_black_bullet_create
+    global is_item_create,  is_bullet_upgrade, is_black_bullet_create ,is_eat_item , background
     game_world.objects = [[], []]
     BackGround_Width = 1280
     BackGround_Height = 960
@@ -89,7 +89,7 @@ def enter():
     invincibility_time = 100
     shot_term = 0
     needle_up_timer= 200
-
+    is_eat_item = False
     bullets = []
     enemy_bullets = []
     pass
@@ -133,7 +133,7 @@ def handle_events():
     global is_key_pressed
     global is_attack_key_pressing
     global bullet_dir
-    global isaac
+    global isaac,background
 
     events = get_events()
     for event in events:
@@ -224,7 +224,7 @@ def update():
     global is_attack_key_pressing, bullet_dir, gushers, bullet, is_bullet_create, invincibility_time, shot_term
     global flies, monster_count, indoor, enemy_bullets,bullets, is_enemy_bullet_create, mulligans
     global gapers, maggotes, needles, needle_up_timer, recovery_hp, upgrade_bullet, is_item_create,is_bullet_upgrade
-    global is_black_bullet_create
+    global is_black_bullet_create, is_eat_item,background
     for game_object in game_world.all_objects():
         game_object.update()
 
@@ -296,17 +296,20 @@ def update():
         for maggot in maggotes:
             if collide(isaac, maggot):
                 isaac.now_health -= 0.5
+                isaac.hurt()
                 invincibility_time = 100
 
         for gaper in gapers:
             if collide(isaac, gaper):
                 isaac.now_health -= 0.5
+                isaac.hurt()
                 invincibility_time = 100
 
         for needle in needles:
             if needle.needle_up:
                 if collide_ex(isaac, needle):
                     isaac.now_health -= needle.damage
+                    isaac.hurt()
                     invincibility_time = 100
 
         for enemy_bullet in enemy_bullets:
@@ -314,6 +317,7 @@ def update():
                 game_world.remove_object(enemy_bullet)
                 enemy_bullets.remove(enemy_bullet)
                 isaac.now_health -= enemy_bullet.damage
+                isaac.hurt()
                 invincibility_time = 100
 
     for gaper in gapers:
@@ -345,7 +349,11 @@ def update():
 
 
     if monster_count == 0:
+        if not indoor.open_door:
+            indoor.open()
         indoor.open_door = True
+
+
         if not is_item_create:
             recovery_hp = RecoveryHp()
             upgrade_bullet = UpgradeBullet()
@@ -354,14 +362,19 @@ def update():
             is_item_create = True
 
     if is_item_create:
-        if collide(isaac, recovery_hp):
-            game_world.remove_object(upgrade_bullet)
-            game_world.remove_object(recovery_hp)
-            isaac.now_health = 3
-        if collide(isaac, upgrade_bullet):
-            game_world.remove_object(upgrade_bullet)
-            game_world.remove_object(recovery_hp)
-            is_bullet_upgrade = True
+        if not is_eat_item:
+            if collide(isaac, recovery_hp):
+                game_world.remove_object(upgrade_bullet)
+                game_world.remove_object(recovery_hp)
+                isaac.eat_health_item()
+                isaac.now_health = 3
+                is_eat_item = True
+            if collide(isaac, upgrade_bullet):
+                game_world.remove_object(upgrade_bullet)
+                game_world.remove_object(recovery_hp)
+                isaac.eat_upgrade_bullet_item()
+                is_bullet_upgrade = True
+                is_eat_item = True
 
 
     if collide(isaac, indoor):
@@ -369,10 +382,15 @@ def update():
             for game_object in game_world.all_objects():
                  game_world.remove_object(game_object)
             game_framework.change_state(boss_intro_state)
+            background.bgm.stop()
+            indoor.enter_boss_room()
 
     pass
 
     if isaac.is_death:
+        game_world.remove_object(background)
+        background = BackGround(2)
+        game_world.add_object(background, 0)
         game_framework.change_state(death_state)
 def draw():
     clear_canvas()

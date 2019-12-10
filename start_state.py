@@ -9,8 +9,12 @@ BackGround_Height = 960
 
 
 def enter():
-    global image
+    global image,bgm
     image = load_image('resource/start_state.png')
+    bgm = load_music('sound/titleScreenJingle.ogg')
+    bgm.set_volume(65)
+    bgm.repeat_play()
+
     pass
 
 
@@ -23,18 +27,20 @@ def exit():
 
 
 def update():
-    global logo_time
+    global logo_time,bgm
     if (logo_time >1.0):
         logo_time  = 0
         game_framework.change_state(title_state)
     delay(0.01)
     logo_time += 0.01
+
     pass
 
 
 def draw():
     global image
     clear_canvas()
+
     image.draw(BackGround_Width//2, BackGround_Height//2)
     update_canvas()
     pass

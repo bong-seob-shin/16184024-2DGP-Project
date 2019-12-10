@@ -216,7 +216,7 @@ def get_isaac():
 def update():
     global is_attack_key_pressing, bullet_dir, gushers, bullet, is_bullet_create, invincibility_time, shot_term
     global flies, monster_count, indoor, enemy_bullets,bullets, is_enemy_bullet_create, mulligans
-    global gapers, needle_up_timer
+    global gapers, needle_up_timer, background
     for game_object in game_world.all_objects():
         game_object.update()
 
@@ -286,25 +286,30 @@ def update():
         for fly in flies:
             if collide(isaac, fly):
                 isaac.now_health -= 0.5
+                isaac.hurt()
                 invincibility_time = 100
         for mulligan in mulligans:
             if collide(isaac, mulligan):
                 isaac.now_health -= 0.5
+                isaac.hurt()
                 invincibility_time = 100
         for gaper in gapers:
             if collide(isaac, gaper):
                 isaac.now_health -= 0.5
+                isaac.hurt()
                 invincibility_time = 100
         for needle in needles:
             if needle.needle_up:
                 if collide_ex(isaac, needle):
                     isaac.now_health -= needle.damage
+                    isaac.hurt()
                     invincibility_time = 100
         for enemy_bullet in enemy_bullets:
             if collide(isaac, enemy_bullet):
                 game_world.remove_object(enemy_bullet)
                 enemy_bullets.remove(enemy_bullet)
                 isaac.now_health -= enemy_bullet.damage
+                isaac.hurt()
                 invincibility_time = 100
 
     for gaper in gapers:
@@ -361,7 +366,10 @@ def update():
         needle_up_timer -=1
 
     if monster_count == 0:
+        if not indoor.open_door:
+            indoor.open()
         indoor.open_door = True
+
 
     if collide(isaac, indoor):
         if indoor.open_door:
@@ -371,6 +379,9 @@ def update():
 
     pass
     if isaac.is_death:
+        game_world.remove_object(background)
+        background = BackGround(2)
+        game_world.add_object(background, 0)
         game_framework.change_state(death_state)
 
 def draw():

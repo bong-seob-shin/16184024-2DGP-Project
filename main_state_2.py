@@ -217,7 +217,7 @@ def get_isaac():
 def update():
     global is_attack_key_pressing, bullet_dir, gushers, bullet, is_bullet_create, invincibility_time, shot_term
     global flies, monster_count, indoor, big_flies, enemy_bullets,bullets, is_enemy_bullet_create, enemy_big_fly_shot_term
-    global  needles
+    global  needles,background
     for game_object in game_world.all_objects():
         game_object.update()
 
@@ -269,19 +269,23 @@ def update():
             if collide(isaac, fly):
                 isaac.now_health -= 0.5
                 invincibility_time = 100
+                isaac.hurt()
         for big_fly in big_flies:
             if collide(isaac, big_fly):
                 isaac.now_health -= 0.5
                 invincibility_time = 100
+                isaac.hurt()
         for needle in needles:
             if collide_ex(isaac, needle):
                 isaac.now_health -= needle.damage
                 invincibility_time = 100
+                isaac.hurt()
         for enemy_bullet in enemy_bullets:
             if collide(isaac, enemy_bullet):
                 game_world.remove_object(enemy_bullet)
                 enemy_bullets.remove(enemy_bullet)
                 isaac.now_health -= enemy_bullet.damage
+                isaac.hurt()
                 invincibility_time = 100
 
     for big_fly in big_flies:
@@ -326,7 +330,10 @@ def update():
         shot_term -= 1
 
     if monster_count == 0:
+        if not indoor.open_door:
+            indoor.open()
         indoor.open_door = True
+
 
     if collide(isaac, indoor):
         if indoor.open_door:
@@ -334,6 +341,9 @@ def update():
     pass
 
     if isaac.is_death:
+        game_world.remove_object(background)
+        background = BackGround(2)
+        game_world.add_object(background, 0)
         game_framework.change_state(death_state)
 
 def draw():

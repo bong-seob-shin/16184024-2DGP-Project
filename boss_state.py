@@ -46,13 +46,11 @@ def enter():
     isaac.x = 200
     isaac.y = BackGround_Height//2
     isaac.body_x, isaac.body_y = isaac.x - 5, isaac.y - 50
-    isaac.velocity_x = main_state_4.isaac.velocity_x
-    isaac.velocity_y = main_state_4.isaac.velocity_y
     isaac.now_health = main_state_4.hp
     isaac.body_is_move = False
     duke = Duke()
     monster_count = 0
-    background = BackGround()
+    background = BackGround(1)
     entrance_door = Door()
     entrance_door.x = door_position[0]
     entrance_indoor = InDoor()
@@ -118,7 +116,7 @@ def handle_events():
     global is_key_pressed
     global is_attack_key_pressing
     global bullet_dir
-    global isaac
+    global isaac,background
 
     events = get_events()
     for event in events:
@@ -127,8 +125,6 @@ def handle_events():
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
                 game_framework.push_state(pause_state)
-            # elif event.key == SDLK_1:
-            #     game_framework.change_state(main_state_3)
             elif event.key == SDLK_d:
                 isaac.body_is_move = True
                 isaac.velocity_x += isaac.velocity
@@ -209,7 +205,7 @@ def get_isaac():
 def update():
     global is_attack_key_pressing, bullet_dir, gushers, bullet, is_bullet_create, invincibility_time, shot_term
     global flies, monster_count, big_flies, enemy_bullets,bullets, is_enemy_bullet_create, enemy_big_fly_shot_term
-    global  is_bullet_upgrade, is_black_bullet_create, duke, is_monster_create
+    global  is_bullet_upgrade, is_black_bullet_create, duke, is_monster_create,background
     for game_object in game_world.all_objects():
         game_object.update()
 
@@ -233,9 +229,10 @@ def update():
             game_world.add_object(big_fly, 1)
             flies.append(fly1)
             flies.append(fly2)
-            big_flies.apeend(big_fly)
-        is_monster_create
-        duke.create_fly_timer = 1000
+            big_flies.append(big_fly)
+        is_monster_create= True
+        duke.summon()
+        duke.create_fly_timer = 500
 
     if not is_bullet_upgrade:
         if is_attack_key_pressing >= 1:
@@ -310,19 +307,23 @@ def update():
         for fly in flies:
             if collide(isaac, fly):
                 isaac.now_health -= 0.5
+                isaac.hurt()
                 invincibility_time = 100
         for big_fly in big_flies:
             if collide(isaac, big_fly):
                 isaac.now_health -= 0.5
+                isaac.hurt()
                 invincibility_time = 100
         for enemy_bullet in enemy_bullets:
             if collide(isaac, enemy_bullet):
                 game_world.remove_object(enemy_bullet)
                 enemy_bullets.remove(enemy_bullet)
                 isaac.now_health -= enemy_bullet.damage
+                isaac.hurt()
                 invincibility_time = 100
         if collide(isaac, duke):
             isaac.now_health -= 1
+            isaac.hurt()
             invincibility_time = 100
 
     for big_fly in big_flies:
@@ -353,6 +354,9 @@ def update():
         duke.create_fly_timer -= 1
 
     if isaac.is_death:
+        game_world.remove_object(background)
+        background = BackGround(2)
+        game_world.add_object(background, 0)
         game_framework.change_state(death_state)
 
 def draw():

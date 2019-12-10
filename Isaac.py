@@ -3,7 +3,7 @@ import main_state
 import game_framework
 from Health import  Health
 import game_world
-
+import  random
 BackGround_Width = 1280
 BackGround_Height = 960
 
@@ -39,6 +39,16 @@ class Isaac:
         self.health_index = self.start_health-1
         self.heartArray = [Health(60*(i+1)) for i in range(self.start_health)]
         self.is_death = False
+        self.hurt_sound1 = load_wav('sound/hurt1.wav')
+        self.hurt_sound1.set_volume(32)
+        self.hurt_sound2 = load_wav('sound/hurt2.wav')
+        self.hurt_sound2.set_volume(32)
+        self.hurt_sound3 = load_wav('sound/hurt3.wav')
+        self.hurt_sound3.set_volume(32)
+        self.health_item_sound = load_wav('sound/heartIntake.wav')
+        self.health_item_sound.set_volume(32)
+        self.upgradeBullet_item_sound = load_wav('sound/bulletUpgrade.wav')
+        self.upgradeBullet_item_sound.set_volume(32)
     def update(self):
 
         self.frame = (self.frame+ HEADFRAME_PER_ACTION*ACTION_PER_TIME*game_framework.frame_time) % 2
@@ -105,6 +115,21 @@ class Isaac:
     def body_get_bb(self):
         return self.body_x-30, self.body_y-20, self.body_x+30, self.body_y+20
 
+    def hurt(self):
+        hurt_num = random.randint(1,3)
+        if hurt_num == 1:
+            self.hurt_sound1.play()
+        elif hurt_num == 2:
+            self.hurt_sound2.play()
+        elif hurt_num == 3:
+            self.hurt_sound3.play()
+        pass
+
+    def eat_health_item(self):
+        self.health_item_sound.play()
+
+    def eat_upgrade_bullet_item(self):
+        self.upgradeBullet_item_sound.play()
     pass
 
 

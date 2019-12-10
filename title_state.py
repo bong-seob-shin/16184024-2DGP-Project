@@ -7,8 +7,11 @@ image = None
 
 
 def enter():
-    global image, BackGround_Width, BackGround_Height
+    global image, BackGround_Width, BackGround_Height, bgm
     image = load_image('resource/title1.png')
+    bgm = load_music('sound/titleScreenLoop.ogg')
+    bgm.repeat_play()
+    bgm.set_volume(65)
     BackGround_Width = 1280
     BackGround_Height = 960
     game_world.objects = [[], []]

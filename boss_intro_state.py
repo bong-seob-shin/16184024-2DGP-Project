@@ -1,6 +1,7 @@
 import game_framework
 from pico2d import *
 import boss_state
+import game_world
 name = "BossIntroState"
 image = None
 logo_time = 0.0
@@ -10,6 +11,8 @@ BackGround_Height = 960
 
 def enter():
     global image
+    game_world.objects = [[],[]]
+
     image = load_image('resource/BossIntro.png')
     pass
 

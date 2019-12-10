@@ -24,6 +24,11 @@ class Bullet:
         self.start_x = self.x
         self.start_y = self.y
         self.damage = 1
+        self.sound = load_wav('sound/tearPop.wav')
+        self.sound.set_volume(50)
+        self.sound.play()
+        self.pop_sound = load_wav('sound/pop.wav')
+        self.pop_sound.set_volume(30)
     def draw(self):
 
         if self.b_dir == 0: #오른쪽
@@ -59,13 +64,20 @@ class Bullet:
 
         if self.x < 175 or self.x > 1280 - 175:
             game_world.remove_object(self)
+            self.pop_sound.play()
         elif self.x > self.start_x+400 or self.x < self.start_x-400:
             game_world.remove_object(self)
+            self.pop_sound.play()
+
 
         if self.y < 155 or self.y > 960 - 150:
             game_world.remove_object(self)
+            self.pop_sound.play()
+
         elif self.y <self.start_y - 400 or self.y > self.start_y+400:
             game_world.remove_object(self)
+            self.pop_sound.play()
+
 
         self.right_x = self.x + 40
         self.left_x = self.x - 40
@@ -81,7 +93,8 @@ class Bullet:
         elif self.b_dir == 3:  # 위
             return self.x - 10, self.down_y - 10, self.x + 10, self.down_y + 10
 
-
+    def pop(self):
+        self.pop_sound.play()
 
     pass
 

@@ -28,7 +28,7 @@ class Mulligan:
         self.y = random.randint(200, 750)
         self.speed = RUN_SPEED_PPS
         self.dir = random.randint(0,1)
-        self.timer = 10
+        self.timer = 1
         self.health = 7
         self.frame = 0
         self.bottom = 0

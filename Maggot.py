@@ -29,7 +29,7 @@ class Maggot:
         self.y = random.randint(200, 750)
         self.velocity = RUN_SPEED_PPS
         self.dir = random.randint(0,3)
-        self.timer = 5
+        self.timer = 1
         self.health = 4
         self.frame = 0
         self.bottom = 0

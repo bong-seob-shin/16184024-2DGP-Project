@@ -29,7 +29,7 @@ class BigFly:
         self.y = y
         self.velocity = RUN_SPEED_PPS
         self.dir = random.randint(0,1)
-        self.timer = 5
+        self.timer = 1
         self.health = 3
         self.frame = 0
         self.bottom = 0

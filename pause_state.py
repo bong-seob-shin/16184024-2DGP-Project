@@ -1,14 +1,15 @@
 import game_framework
 from pico2d import *
-import  game_world
-import  main_state
 import title_state
+import main_state
+import game_world
 name = "PauseState"
 image = None
 
 def enter():
     global image
     image = load_image('resource/pause.png')
+
     pass
 
 

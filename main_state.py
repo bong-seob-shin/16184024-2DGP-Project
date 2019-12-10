@@ -40,7 +40,7 @@ def enter():
     BackGround_Width = 1280
     BackGround_Height = 960
     isaac = Isaac()
-    monster_count = 10
+    monster_count = 1
     gushers = [Gusher() for i in range (monster_count)]
     background = BackGround()
     door = Door()
@@ -93,7 +93,7 @@ def handle_events():
     global is_key_pressed
     global is_attack_key_pressing
     global bullet_dir
-    global isaac
+    global isaac,background
 
     events = get_events()
     for event in events:
@@ -179,7 +179,7 @@ def handle_events():
 
 def update():
     global is_attack_key_pressing, bullet_dir, gushers, bullet, is_bullet_create,invincibility_time, shot_term, bullets
-    global  gusher, monster_count, indoor, rocks, is_key_pressed
+    global  gusher, monster_count, indoor, rocks, is_key_pressed, background
     for game_object in game_world.all_objects():
         game_object.update()
 
@@ -246,12 +246,15 @@ def update():
             if collide(isaac, gusher):
                 isaac.now_health -= 0.5
                 invincibility_time = 100
+                isaac.hurt()
     if invincibility_time >0:
         invincibility_time -= 1
     if shot_term >=0:
         shot_term -= 1
 
     if monster_count == 0:
+        if not indoor.open_door:
+            indoor.open()
         indoor.open_door = True
 
 
@@ -267,7 +270,9 @@ def update():
     pass
 
     if isaac.is_death:
-
+        game_world.remove_object(background)
+        background = BackGround(2)
+        game_world.add_object(background,0)
         game_framework.change_state(death_state)
 
 def draw():

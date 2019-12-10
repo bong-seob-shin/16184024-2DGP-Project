@@ -28,19 +28,21 @@ class Duke:
         self.y = BackGround_Height//2
         self.velocity = RUN_SPEED_PPS
         self.dir = random.randint(0,1)
-        self.timer = 10
-        self.health = 10
+        self.timer = 1
+        self.health = 100
         self.frame = 0
         self.bottom = 0
-        self.create_fly_timer = 100
+        self.create_fly_timer = 50
         self.build_behavior_tree()
+        self.summon_sound = load_wav('sound/summon.wav')
+        self.summon_sound.set_volume(50)
 
 
     def draw(self):
         draw_rectangle(*self.get_bb())
         self.image.clip_draw(int(self.frame) * 200, self.bottom, 200, 200, self.x, self.y)
     def get_bb(self):
-        return self.x - 100, self.y - 100, self.x + 100, self.y +100
+        return self.x - 80, self.y - 80, self.x + 80, self.y +80
 
     def calculate_current_position(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
@@ -72,5 +74,7 @@ class Duke:
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
         self.bt.run()
 
+    def summon(self):
+        self.summon_sound.play()
 
     pass
