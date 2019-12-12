@@ -126,7 +126,7 @@ def handle_events():
     global is_key_pressed
     global is_attack_key_pressing
     global bullet_dir
-    global isaac
+    global isaac,monster_count
 
     events = get_events()
     for event in events:
@@ -137,6 +137,17 @@ def handle_events():
                 game_framework.push_state(pause_state)
             elif event.key == SDLK_1:
                 game_framework.change_state(main_state_4)
+            elif event.key == SDLK_0:
+                monster_count = 0
+                for fly in flies:
+                    game_world.remove_object(fly)
+                    flies.remove(fly)
+                for gaper in gapers:
+                    game_world.remove_object(gaper)
+                    gapers.remove(gaper)
+                for mulligan in mulligans:
+                    game_world.remove_object(mulligan)
+                    mulligans.remove(mulligan)
             elif event.key == SDLK_d:
                 isaac.body_is_move = True
                 isaac.velocity_x += isaac.velocity

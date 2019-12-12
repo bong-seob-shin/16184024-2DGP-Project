@@ -93,7 +93,7 @@ def handle_events():
     global is_key_pressed
     global is_attack_key_pressing
     global bullet_dir
-    global isaac,background
+    global isaac,background,monster_count
 
     events = get_events()
     for event in events:
@@ -104,6 +104,11 @@ def handle_events():
                 game_framework.push_state(pause_state)
             elif event.key == SDLK_1:
                 game_framework.change_state(main_state_2)
+            elif event.key == SDLK_0:
+                monster_count = 0
+                for gusher in gushers:
+                    game_world.remove_object(gusher)
+                    gushers.remove(gusher)
             elif event.key == SDLK_d:
                 isaac.body_is_move = True
                 isaac.velocity_x += isaac.velocity

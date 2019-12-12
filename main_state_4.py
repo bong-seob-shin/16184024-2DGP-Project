@@ -38,7 +38,7 @@ Needle.image = None
 def enter():
     global isaac, background, is_key_pressed, is_attack_key_pressing, bullet_dir, gushers, is_bullet_create
     global BackGround_Width, BackGround_Height, invincibility_time, shot_term, bullets, door, indoor, monster_count
-    global  flies, enemy_bullets, is_enemy_bullet_create,gapers , mulligans, maggotes, needles, needle_up_timer
+    global  flies, enemy_bullets, is_enemy_bullet_create,gapers , maggotes, needles, needle_up_timer
     global is_item_create,  is_bullet_upgrade, is_black_bullet_create ,is_eat_item , background
     game_world.objects = [[], []]
     BackGround_Width = 1280
@@ -133,7 +133,7 @@ def handle_events():
     global is_key_pressed
     global is_attack_key_pressing
     global bullet_dir
-    global isaac,background
+    global isaac,background,monster_count
 
     events = get_events()
     for event in events:
@@ -144,6 +144,14 @@ def handle_events():
                 game_framework.push_state(pause_state)
             elif event.key == SDLK_1:
                 game_framework.change_state(boss_intro_state)
+            elif event.key == SDLK_0:
+                monster_count = 0
+                for gaper in gapers:
+                    game_world.remove_object(gaper)
+                    gapers.remove(gaper)
+                for maggot in maggotes:
+                    game_world.remove_object(maggot)
+                    maggotes.remove(maggot)
             elif event.key == SDLK_d:
                 isaac.body_is_move = True
                 isaac.velocity_x += isaac.velocity

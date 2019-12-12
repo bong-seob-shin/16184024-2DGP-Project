@@ -81,7 +81,7 @@ def enter():
     is_bullet_create = False
     is_enemy_bullet_create = False
     invincibility_time = 100
-    shot_term = 100
+    shot_term = 0
 
     bullets = []
     enemy_bullets = []
@@ -126,7 +126,7 @@ def handle_events():
     global is_key_pressed
     global is_attack_key_pressing
     global bullet_dir
-    global isaac
+    global isaac,monster_count
 
     events = get_events()
     for event in events:
@@ -137,6 +137,14 @@ def handle_events():
                 game_framework.push_state(pause_state)
             elif event.key == SDLK_1:
                 game_framework.change_state(main_state_3)
+            elif event.key == SDLK_0:
+                monster_count = 0
+                for fly in flies:
+                    game_world.remove_object(fly)
+                    flies.remove(fly)
+                for big_fly in big_flies:
+                    game_world.remove_object(big_fly)
+                    big_flies.remove(big_fly)
             elif event.key == SDLK_d:
                 isaac.body_is_move = True
                 isaac.velocity_x += isaac.velocity
