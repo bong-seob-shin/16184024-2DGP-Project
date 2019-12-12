@@ -70,7 +70,7 @@ def enter():
     is_black_bullet_create = False
     is_monster_create = False
     invincibility_time = 100
-    shot_term = 100
+    shot_term = 0
     flies = []
     big_flies = []
     bullets = []
